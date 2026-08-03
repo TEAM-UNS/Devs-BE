@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "tbl_open_time")
+@Table(name = "tbl_major")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MajorEntity {
+public class Major {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "major_id",nullable = false)
