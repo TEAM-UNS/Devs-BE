@@ -34,8 +34,11 @@ dependencies {
 	//email
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-	//password encoder
-	implementation 'org.springframework.security:spring-security-crypto'
+	//security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	//jwt
+	implementation 'org.springframework.security:spring-security-oauth2-jose'
 
 	//lombok
 	compileOnly 'org.projectlombok:lombok'
