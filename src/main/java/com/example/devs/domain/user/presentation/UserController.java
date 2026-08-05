@@ -3,6 +3,7 @@ package com.example.devs.domain.user.presentation;
 import com.example.devs.domain.user.presentation.dto.request.EmailVerificationConfirmRequest;
 import com.example.devs.domain.user.presentation.dto.request.EmailVerificationSendRequest;
 import com.example.devs.domain.user.presentation.dto.request.UserSignupRequest;
+import com.example.devs.domain.user.service.EmailSendService;
 import com.example.devs.domain.user.service.EmailVerificationService;
 import com.example.devs.domain.user.service.UserSignupService;
 import jakarta.validation.Valid;
@@ -19,22 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
     private final UserSignupService userSignupService;
+    private final EmailSendService emailSendService;
     private final EmailVerificationService emailVerificationService;
 
     @PostMapping("/email/send")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void sendVerificationCode(
-            @Valid @RequestBody EmailVerificationSendRequest request
-    ) {
-        emailVerificationService.sendVerificationCode(request);
+    public void sendVerificationCode(@Valid @RequestBody EmailVerificationSendRequest request) {
+        emailSendService.execute(request);
     }
 
     @PostMapping("/email/verify")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void confirmVerificationCode(
-            @Valid @RequestBody EmailVerificationConfirmRequest request
-    ) {
-        emailVerificationService.verifyCode(request);
+    public void confirmVerificationCode(@Valid @RequestBody EmailVerificationConfirmRequest request) {
+        emailVerificationService.execute(request);
     }
 
     @PostMapping("/signup")

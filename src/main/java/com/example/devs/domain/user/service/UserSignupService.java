@@ -5,12 +5,11 @@ import com.example.devs.domain.user.domain.User;
 import com.example.devs.domain.user.domain.repository.UserRepository;
 import com.example.devs.domain.user.exception.EmailAlreadyExistsException;
 import com.example.devs.domain.user.presentation.dto.request.UserSignupRequest;
+import com.example.devs.domain.user.util.EmailNormalizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class UserSignupService {
 
     @Transactional
     public void execute(UserSignupRequest userSignupRequest) {
-        String email = userSignupRequest.email().trim().toLowerCase(Locale.ROOT);
+        String email = EmailNormalizer.normalize(userSignupRequest.email());
 
         if (userRepository.existsByEmail(email)) {
             throw new EmailAlreadyExistsException();
