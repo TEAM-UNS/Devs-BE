@@ -1,8 +1,9 @@
 package com.example.devs.domain.user.presentation.dto.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.example.devs.domain.user.domain.PersonalHistory;
+import jakarta.validation.constraints.*;
+
+import java.util.Set;
 
 public record UserSignupRequest(
         @NotBlank(message = "이메일은 필수입니다.")
@@ -15,6 +16,15 @@ public record UserSignupRequest(
 
         @NotBlank(message = "비밀번호는 필수입니다.")
         @Size(min = 8, max = 64, message = "비밀번호는 8자 이상 64자 이하여야 합니다.")
-        String password
+        String password,
+
+        @NotNull(message = "경력은 필수입니다.")
+        PersonalHistory personalHistory,
+
+        @NotEmpty(message = "전공을 한 개 이상 선택해야 합니다.")
+        Set<@Positive(message = "전공 ID는 양수여야 합니다.") Long> majorIds,
+
+        @NotEmpty(message = "기술 스택을 한 개 이상 선택해야 합니다.")
+        Set<@Positive(message = "기술 스택 ID는 양수여야 합니다.") Long> techStackIds
 ) {
 }
