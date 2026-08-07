@@ -44,6 +44,7 @@ public class SecurityConfig {
                         //user
                         .requestMatchers(HttpMethod.POST, "/user/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/reissue").permitAll()
 
                         .anyRequest().denyAll())
                 .exceptionHandling(exception -> exception

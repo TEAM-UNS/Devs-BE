@@ -19,6 +19,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.UUID;
 
 @Component
 public class JwtProvider {
@@ -56,11 +57,11 @@ public class JwtProvider {
     }
 
     public Jwt parseAccessToken(String token) {
-        Jwt jwt = jwtDecoder.decode(token);
-        if (!ACCESS_TOKEN_TYPE.equals(jwt.getClaimAsString(TOKEN_TYPE_CLAIM))) {
-            throw new BadJwtException("Access Token이 아닙니다.");
-        }
-        return jwt;
+        return parseToken(token, ACCESS_TOKEN_TYPE);
+    }
+
+    public Jwt parseRefreshToken(String token) {
+        return parseToken(token, REFRESH_TOKEN_TYPE);
     }
 
     private String generateToken(User user, String tokenType, Duration expiration) {
@@ -72,6 +73,7 @@ public class JwtProvider {
                 .expiresAt(issuedAt.plus(expiration))
                 .claim("email", user.getEmail())
                 .claim(TOKEN_TYPE_CLAIM, tokenType)
+                .claim("jti", UUID.randomUUID().toString())
                 .build();
 
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256)
@@ -80,5 +82,13 @@ public class JwtProvider {
 
         return jwtEncoder.encode(JwtEncoderParameters.from(header, claims))
                 .getTokenValue();
+    }
+
+    private Jwt parseToken(String token, String expectedTokenType) {
+        Jwt jwt = jwtDecoder.decode(token);
+        if (!expectedTokenType.equals(jwt.getClaimAsString(TOKEN_TYPE_CLAIM))) {
+            throw new BadJwtException("토큰 타입이 올바르지 않습니다.");
+        }
+        return jwt;
     }
 }
