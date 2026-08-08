@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface SkillFieldRepository extends JpaRepository<SkillField, SkillFieldId> {
     @Query("""
@@ -17,6 +18,17 @@ public interface SkillFieldRepository extends JpaRepository<SkillField, SkillFie
             """)
     long countMatchedSkills(
             @Param("skillIds") Collection<Integer> skillIds,
+            @Param("fieldIds") Collection<Integer> fieldIds
+    );
+
+    @Query("""
+            select sf
+            from SkillField sf
+            join fetch sf.skill
+            where sf.field.id in :fieldIds
+            order by sf.field.sortOrder, sf.skill.name
+            """)
+    List<SkillField> findAllWithSkillByFieldIds(
             @Param("fieldIds") Collection<Integer> fieldIds
     );
 }
