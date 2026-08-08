@@ -1,6 +1,6 @@
-package com.example.devs.domain.user_major.domain;
+package com.example.devs.domain.user_skill.domain;
 
-import com.example.devs.domain.tech_field.domain.TechField;
+import com.example.devs.domain.skill.domain.Skill;
 import com.example.devs.domain.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,17 +20,17 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(
-        name = "tbl_user_major",
+        name = "tbl_user_skill",
         uniqueConstraints = @UniqueConstraint(
-                name = "uk_user_major",
-                columnNames = {"user_id", "field_id"}
+                name = "uk_user_skill",
+                columnNames = {"user_id", "skill_id"}
         )
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserMajor {
+public class UserSkill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_major_id", nullable = false)
+    @Column(name = "user_skill_id", nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -38,12 +38,12 @@ public class UserMajor {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "field_id", nullable = false)
-    private TechField major;
+    @JoinColumn(name = "skill_id", nullable = false)
+    private Skill skill;
 
     @Builder
-    public UserMajor(User user, TechField major) {
+    public UserSkill(User user, Skill skill) {
         this.user = user;
-        this.major = major;
+        this.skill = skill;
     }
 }

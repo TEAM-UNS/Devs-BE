@@ -22,9 +22,9 @@ public record UserSignupRequest(
         PersonalHistory personalHistory,
 
         @NotEmpty(message = "전공을 한 개 이상 선택해야 합니다.")
-        Set<@Positive(message = "전공 ID는 양수여야 합니다.") Long> majorIds,
+        Set<@Positive(message = "전공 ID는 양수여야 합니다.") Integer> majorIds,
 
-        @NotEmpty(message = "기술 스택을 한 개 이상 선택해야 합니다.")
-        Set<@Positive(message = "기술 스택 ID는 양수여야 합니다.") Long> techStackIds
+        @NotEmpty(message = "기술을 한 개 이상 선택해야 합니다.")
+        Set<@Positive(message = "기술 ID는 양수여야 합니다.") Integer> skillIds
 ) {
 }

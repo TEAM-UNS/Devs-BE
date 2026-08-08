@@ -1,21 +1,22 @@
 package com.example.devs.domain.user.service;
 
-import com.example.devs.domain.major.domain.Major;
-import com.example.devs.domain.major.domain.repository.MajorRepository;
-import com.example.devs.domain.major.exception.MajorNotFoundException;
-import com.example.devs.domain.tech_stack.domain.TechStack;
-import com.example.devs.domain.tech_stack.domain.repository.TechStackRepository;
-import com.example.devs.domain.tech_stack.exception.TechStackMajorMismatchException;
-import com.example.devs.domain.tech_stack.exception.TechStackNotFoundException;
+import com.example.devs.domain.skill.domain.Skill;
+import com.example.devs.domain.skill.domain.repository.SkillFieldRepository;
+import com.example.devs.domain.skill.domain.repository.SkillRepository;
+import com.example.devs.domain.skill.exception.SkillNotFoundException;
+import com.example.devs.domain.skill.exception.SkillTechFieldMismatchException;
+import com.example.devs.domain.tech_field.domain.TechField;
+import com.example.devs.domain.tech_field.domain.repository.TechFieldRepository;
+import com.example.devs.domain.tech_field.exception.MajorNotFoundException;
 import com.example.devs.domain.user.domain.User;
 import com.example.devs.domain.user.domain.repository.UserRepository;
 import com.example.devs.domain.user.exception.EmailAlreadyExistsException;
 import com.example.devs.domain.user.presentation.dto.request.UserSignupRequest;
 import com.example.devs.domain.user.util.EmailNormalizer;
+import com.example.devs.domain.user_skill.domain.UserSkill;
+import com.example.devs.domain.user_skill.domain.repository.UserSkillRepository;
 import com.example.devs.domain.user_major.domain.UserMajor;
 import com.example.devs.domain.user_major.domain.repository.UserMajorRepository;
-import com.example.devs.domain.user_tech_stack.domain.UserTechStack;
-import com.example.devs.domain.user_tech_stack.domain.repository.UserTechStackRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,10 +28,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserSignupService {
     private final UserRepository userRepository;
-    private final MajorRepository majorRepository;
-    private final TechStackRepository techStackRepository;
+    private final TechFieldRepository techFieldRepository;
+    private final SkillRepository skillRepository;
+    private final SkillFieldRepository skillFieldRepository;
     private final UserMajorRepository userMajorRepository;
-    private final UserTechStackRepository userTechStackRepository;
+    private final UserSkillRepository userSkillRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
 
@@ -44,24 +46,22 @@ public class UserSignupService {
 
         emailVerificationService.validateVerified(email);
 
-        List<Major> majors = majorRepository.findAllById(userSignupRequest.majorIds());
+        List<TechField> majors = techFieldRepository.findAllById(userSignupRequest.majorIds());
         if (majors.size() != userSignupRequest.majorIds().size()) {
             throw new MajorNotFoundException();
         }
 
-        List<TechStack> techStacks = techStackRepository.findAllById(
-                userSignupRequest.techStackIds()
-        );
-        if (techStacks.size() != userSignupRequest.techStackIds().size()) {
-            throw new TechStackNotFoundException();
+        List<Skill> skills = skillRepository.findAllById(userSignupRequest.skillIds());
+        if (skills.size() != userSignupRequest.skillIds().size()) {
+            throw new SkillNotFoundException();
         }
 
-        boolean hasMismatchedTechStack = techStacks.stream()
-                .anyMatch(techStack -> !userSignupRequest.majorIds()
-                        .contains(techStack.getMajor().getId()));
-
-        if (hasMismatchedTechStack) {
-            throw new TechStackMajorMismatchException();
+        long matchedSkillCount = skillFieldRepository.countMatchedSkills(
+                userSignupRequest.skillIds(),
+                userSignupRequest.majorIds()
+        );
+        if (matchedSkillCount != skills.size()) {
+            throw new SkillTechFieldMismatchException();
         }
 
         User user = User.builder()
@@ -80,15 +80,15 @@ public class UserSignupService {
                         .build())
                 .toList();
 
-        List<UserTechStack> userTechStacks = techStacks.stream()
-                .map(techStack -> UserTechStack.builder()
+        List<UserSkill> userSkills = skills.stream()
+                .map(skill -> UserSkill.builder()
                         .user(user)
-                        .techStack(techStack)
+                        .skill(skill)
                         .build())
                 .toList();
 
         userMajorRepository.saveAll(userMajors);
-        userTechStackRepository.saveAll(userTechStacks);
+        userSkillRepository.saveAll(userSkills);
         userRepository.flush();
 
         emailVerificationService.clearVerification(email);

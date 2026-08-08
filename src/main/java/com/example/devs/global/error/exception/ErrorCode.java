@@ -25,10 +25,10 @@ public enum ErrorCode {
     EMAIL_NOT_VERIFIED(HttpStatus.FORBIDDEN, "이메일 인증이 필요합니다."),
     EMAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "인증 이메일 발송에 실패했습니다."),
     MAJOR_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 전공이 포함되어 있습니다."),
-    TECH_STACK_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 기술 스택이 포함되어 있습니다."),
-    TECH_STACK_MAJOR_MISMATCH(
+    SKILL_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 기술이 포함되어 있습니다."),
+    SKILL_TECH_FIELD_MISMATCH(
             HttpStatus.BAD_REQUEST,
-            "선택한 전공에 속하지 않는 기술 스택이 포함되어 있습니다."
+            "선택한 전공에 속하지 않는 기술이 포함되어 있습니다."
     );
 
     private final HttpStatus status;
