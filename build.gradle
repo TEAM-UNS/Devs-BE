@@ -44,8 +44,8 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	//mysql
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	//postgresql
+	runtimeOnly 'org.postgresql:postgresql'
 
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
