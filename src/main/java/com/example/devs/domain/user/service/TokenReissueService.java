@@ -3,8 +3,7 @@ package com.example.devs.domain.user.service;
 import com.example.devs.domain.user.domain.User;
 import com.example.devs.domain.user.domain.repository.UserRepository;
 import com.example.devs.domain.user.exception.InvalidRefreshTokenException;
-import com.example.devs.domain.user.presentation.dto.request.TokenReissueRequest;
-import com.example.devs.domain.user.presentation.dto.response.TokenResponse;
+import com.example.devs.domain.user.presentation.dto.response.AccessTokenResponse;
 import com.example.devs.global.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -18,8 +17,7 @@ public class TokenReissueService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
-    public TokenResponse execute(TokenReissueRequest request) {
-        String refreshToken = request.refreshToken();
+    public AccessTokenResponse execute(String refreshToken) {
         Long userId = parseUserId(refreshToken);
 
         if (!refreshTokenService.matches(userId, refreshToken)) {
@@ -29,11 +27,7 @@ public class TokenReissueService {
         User user = userRepository.findById(userId)
                 .orElseThrow(InvalidRefreshTokenException::new);
 
-        String newAccessToken = jwtProvider.generateAccessToken(user);
-        String newRefreshToken = jwtProvider.generateRefreshToken(user);
-        refreshTokenService.save(userId, newRefreshToken);
-
-        return new TokenResponse(newAccessToken, newRefreshToken);
+        return new AccessTokenResponse(jwtProvider.generateAccessToken(user));
     }
 
     private Long parseUserId(String refreshToken) {

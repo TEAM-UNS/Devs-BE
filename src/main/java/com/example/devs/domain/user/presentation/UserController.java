@@ -2,9 +2,9 @@ package com.example.devs.domain.user.presentation;
 
 import com.example.devs.domain.user.presentation.dto.request.EmailVerificationConfirmRequest;
 import com.example.devs.domain.user.presentation.dto.request.EmailVerificationSendRequest;
-import com.example.devs.domain.user.presentation.dto.request.TokenReissueRequest;
 import com.example.devs.domain.user.presentation.dto.request.UserLoginRequest;
 import com.example.devs.domain.user.presentation.dto.request.UserSignupRequest;
+import com.example.devs.domain.user.presentation.dto.response.AccessTokenResponse;
 import com.example.devs.domain.user.presentation.dto.response.TokenResponse;
 import com.example.devs.domain.user.service.EmailSendService;
 import com.example.devs.domain.user.service.EmailVerificationService;
@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,7 +55,7 @@ public class UserController {
     }
 
     @PostMapping("/reissue")
-    public TokenResponse reissue(@Valid @RequestBody TokenReissueRequest request) {
-        return tokenReissueService.execute(request);
+    public AccessTokenResponse reissue(@RequestHeader("X-Refresh-Token") String refreshToken) {
+        return tokenReissueService.execute(refreshToken);
     }
 }
