@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.ColumnTransformer;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
 
@@ -71,6 +73,7 @@ public class Company {
     private String profileEmbedding;
 
     @Column(name = "embed_hash", length = 64, columnDefinition = "char(64)")
+    @JdbcTypeCode(SqlTypes.CHAR)
     private String embedHash;
 
     @Column(name = "raw_fields", nullable = false, columnDefinition = "jsonb")
