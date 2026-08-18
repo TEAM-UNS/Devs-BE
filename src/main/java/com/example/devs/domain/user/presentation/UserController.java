@@ -1,25 +1,15 @@
 package com.example.devs.domain.user.presentation;
 
-import com.example.devs.domain.user.presentation.dto.request.EmailVerificationConfirmRequest;
-import com.example.devs.domain.user.presentation.dto.request.EmailVerificationSendRequest;
-import com.example.devs.domain.user.presentation.dto.request.UserLoginRequest;
-import com.example.devs.domain.user.presentation.dto.request.UserSignupRequest;
+import com.example.devs.domain.user.presentation.dto.request.*;
 import com.example.devs.domain.user.presentation.dto.response.AccessTokenResponse;
 import com.example.devs.domain.user.presentation.dto.response.TokenResponse;
-import com.example.devs.domain.user.service.EmailSendService;
-import com.example.devs.domain.user.service.EmailVerificationService;
-import com.example.devs.domain.user.service.TokenReissueService;
-import com.example.devs.domain.user.service.UserLoginService;
-import com.example.devs.domain.user.service.UserSignupService;
+import com.example.devs.domain.user.service.*;
+import com.example.devs.global.security.jwt.JwtPrincipal;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +20,7 @@ public class UserController {
     private final TokenReissueService tokenReissueService;
     private final EmailSendService emailSendService;
     private final EmailVerificationService emailVerificationService;
+    private final UserMajorUpdateService userMajorUpdateService;
 
     @PostMapping("/email/send")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -58,4 +49,11 @@ public class UserController {
     public AccessTokenResponse reissue(@RequestHeader("X-Refresh-Token") String refreshToken) {
         return tokenReissueService.execute(refreshToken);
     }
+
+    @PutMapping("/major")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateMajor(@AuthenticationPrincipal JwtPrincipal principal, @Valid @RequestBody UserMajorUpdateRequest request) {
+        userMajorUpdateService.execute(principal.userId(), request);
+    }
+
 }
