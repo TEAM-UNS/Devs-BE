@@ -27,4 +27,8 @@ public class User {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PersonalHistory personalHistory;
+
+    public void updatePersonalHistory(PersonalHistory personalHistory) {
+        this.personalHistory = personalHistory;
+    }
 }

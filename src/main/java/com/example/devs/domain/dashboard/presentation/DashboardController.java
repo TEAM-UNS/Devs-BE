@@ -33,7 +33,7 @@ public class DashboardController {
 
     @GetMapping("/popular-tech-stacks")
     public PopularTechStackListResponse getPopularTechStacks(
-            @RequestParam(required = false)
+            @RequestParam(name = "major_id", required = false)
             @Positive
             Integer majorId
     ) {
@@ -42,8 +42,8 @@ public class DashboardController {
 
     @GetMapping("/company-size-tech-stacks")
     public CompanySizeTechStackListResponse getCompanySizeTechStacks(
-            @RequestParam CompanySize companySize,
-            @RequestParam @Positive Integer majorId
+            @RequestParam(name = "company_size") CompanySize companySize,
+            @RequestParam(name = "major_id") @Positive Integer majorId
     ) {
         return companySizeTechStackQueryService.execute(companySize, majorId);
     }
@@ -51,7 +51,7 @@ public class DashboardController {
     @GetMapping("/best-tech-stacks")
     public BestTechStackListResponse getBestTechStacks(
             @RequestParam TechTrendPeriod period,
-            @RequestParam @Positive Integer majorId
+            @RequestParam(name = "major_id") @Positive Integer majorId
     ) {
         return bestTechStackQueryService.execute(period, majorId);
     }

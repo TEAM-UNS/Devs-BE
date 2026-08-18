@@ -34,6 +34,8 @@ public class UserMajorUpdateService {
             throw new MajorNotFoundException();
         }
 
+        user.updatePersonalHistory(request.personalHistory());
+
         userSkillRepository.deleteSkillsNotInMajors(
                 userId,
                 request.majorIds()
