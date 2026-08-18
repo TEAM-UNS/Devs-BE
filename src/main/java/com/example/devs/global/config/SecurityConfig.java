@@ -58,6 +58,12 @@ public class SecurityConfig {
                         //major
                         .requestMatchers(HttpMethod.GET, "/majors").permitAll()
 
+                        //dashboard
+                        .requestMatchers(HttpMethod.GET, "/dashboard/summary").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/dashboard/popular-tech-stacks").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/dashboard/company-size-tech-stacks").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/dashboard/best-tech-stacks").authenticated()
+
                         .anyRequest().denyAll())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
