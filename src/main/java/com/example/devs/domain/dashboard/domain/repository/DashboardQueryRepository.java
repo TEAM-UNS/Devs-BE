@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -207,6 +208,44 @@ public class DashboardQueryRepository {
                 .list();
     }
 
+    public List<TechStackTrendPoint> findTechStackTrendPoints(
+            Integer majorId,
+            OffsetDateTime start,
+            OffsetDateTime end,
+            String bucketUnit
+    ) {
+        return jdbcClient.sql("""
+                        select skill.id as tech_stack_id,
+                               skill.name,
+                               cast(date_trunc(
+                                   :bucketUnit,
+                                   timezone('Asia/Seoul', posting.posted_at)
+                               ) as date) as bucket_date,
+                               count(*) as posting_count
+                        from market.posting_skill posting_skill
+                        join market.skill skill
+                          on skill.id = posting_skill.skill_id
+                        join market.job_posting posting
+                          on posting.id = posting_skill.posting_id
+                        where posting.field_id = :majorId
+                          and posting.posted_at >= :start
+                          and posting.posted_at < :end
+                        group by skill.id, skill.name, bucket_date
+                        order by skill.id, bucket_date
+                        """)
+                .param("majorId", majorId)
+                .param("start", start)
+                .param("end", end)
+                .param("bucketUnit", bucketUnit)
+                .query((resultSet, rowNumber) -> new TechStackTrendPoint(
+                        resultSet.getInt("tech_stack_id"),
+                        resultSet.getString("name"),
+                        resultSet.getObject("bucket_date", LocalDate.class),
+                        resultSet.getLong("posting_count")
+                ))
+                .list();
+    }
+
     public record MentionedTech(String name, long count) {
     }
 
@@ -217,5 +256,13 @@ public class DashboardQueryRepository {
     }
 
     public record CompanySizeTechStack(String name, int percentage) {
+    }
+
+    public record TechStackTrendPoint(
+            Integer id,
+            String name,
+            LocalDate date,
+            long value
+    ) {
     }
 }

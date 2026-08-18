@@ -1,9 +1,12 @@
 package com.example.devs.domain.dashboard.presentation;
 
 import com.example.devs.domain.company.domain.CompanySize;
+import com.example.devs.domain.dashboard.domain.TechTrendPeriod;
+import com.example.devs.domain.dashboard.presentation.dto.response.BestTechStackListResponse;
 import com.example.devs.domain.dashboard.presentation.dto.response.CompanySizeTechStackListResponse;
 import com.example.devs.domain.dashboard.presentation.dto.response.DashboardSummaryResponse;
 import com.example.devs.domain.dashboard.presentation.dto.response.PopularTechStackListResponse;
+import com.example.devs.domain.dashboard.service.BestTechStackQueryService;
 import com.example.devs.domain.dashboard.service.CompanySizeTechStackQueryService;
 import com.example.devs.domain.dashboard.service.DashboardSummaryService;
 import com.example.devs.domain.dashboard.service.PopularTechStackQueryService;
@@ -22,6 +25,7 @@ public class DashboardController {
     private final DashboardSummaryService dashboardSummaryService;
     private final PopularTechStackQueryService popularTechStackQueryService;
     private final CompanySizeTechStackQueryService companySizeTechStackQueryService;
+    private final BestTechStackQueryService bestTechStackQueryService;
 
     @GetMapping("/summary")
     public DashboardSummaryResponse getSummary() {
@@ -43,5 +47,13 @@ public class DashboardController {
             @RequestParam @NotBlank String category
     ) {
         return companySizeTechStackQueryService.execute(companySize, category);
+    }
+
+    @GetMapping("/best-tech-stacks")
+    public BestTechStackListResponse getBestTechStacks(
+            @RequestParam TechTrendPeriod period,
+            @RequestParam @Positive Integer majorId
+    ) {
+        return bestTechStackQueryService.execute(period, majorId);
     }
 }
