@@ -10,7 +10,6 @@ import com.example.devs.domain.dashboard.service.BestTechStackQueryService;
 import com.example.devs.domain.dashboard.service.CompanySizeTechStackQueryService;
 import com.example.devs.domain.dashboard.service.DashboardSummaryService;
 import com.example.devs.domain.dashboard.service.PopularTechStackQueryService;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,9 +43,9 @@ public class DashboardController {
     @GetMapping("/company-size-tech-stacks")
     public CompanySizeTechStackListResponse getCompanySizeTechStacks(
             @RequestParam CompanySize companySize,
-            @RequestParam @NotBlank String category
+            @RequestParam @Positive Integer majorId
     ) {
-        return companySizeTechStackQueryService.execute(companySize, category);
+        return companySizeTechStackQueryService.execute(companySize, majorId);
     }
 
     @GetMapping("/best-tech-stacks")

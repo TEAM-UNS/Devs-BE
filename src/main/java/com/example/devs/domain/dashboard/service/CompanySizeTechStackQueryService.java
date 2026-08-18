@@ -26,9 +26,9 @@ public class CompanySizeTechStackQueryService {
     @Transactional(readOnly = true)
     public CompanySizeTechStackListResponse execute(
             CompanySize companySize,
-            String category
+            Integer majorId
     ) {
-        TechField major = techFieldRepository.findByCodeIgnoreCase(category)
+        TechField major = techFieldRepository.findById(majorId)
                 .orElseThrow(MajorNotFoundException::new);
 
         List<DashboardQueryRepository.CompanySizeTechStack> techStacks =
