@@ -61,6 +61,7 @@ public class SecurityConfig {
                         //dashboard
                         .requestMatchers(HttpMethod.GET, "/dashboard/summary").authenticated()
                         .requestMatchers(HttpMethod.GET, "/dashboard/popular-tech-stacks").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/dashboard/company-size-tech-stacks").authenticated()
 
                         .anyRequest().denyAll())
                 .exceptionHandling(exception -> exception

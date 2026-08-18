@@ -1,9 +1,13 @@
 package com.example.devs.domain.dashboard.presentation;
 
+import com.example.devs.domain.company.domain.CompanySize;
+import com.example.devs.domain.dashboard.presentation.dto.response.CompanySizeTechStackListResponse;
 import com.example.devs.domain.dashboard.presentation.dto.response.DashboardSummaryResponse;
 import com.example.devs.domain.dashboard.presentation.dto.response.PopularTechStackListResponse;
+import com.example.devs.domain.dashboard.service.CompanySizeTechStackQueryService;
 import com.example.devs.domain.dashboard.service.DashboardSummaryService;
 import com.example.devs.domain.dashboard.service.PopularTechStackQueryService;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DashboardController {
     private final DashboardSummaryService dashboardSummaryService;
     private final PopularTechStackQueryService popularTechStackQueryService;
+    private final CompanySizeTechStackQueryService companySizeTechStackQueryService;
 
     @GetMapping("/summary")
     public DashboardSummaryResponse getSummary() {
@@ -30,5 +35,13 @@ public class DashboardController {
             Integer majorId
     ) {
         return popularTechStackQueryService.execute(majorId);
+    }
+
+    @GetMapping("/company-size-tech-stacks")
+    public CompanySizeTechStackListResponse getCompanySizeTechStacks(
+            @RequestParam CompanySize companySize,
+            @RequestParam @NotBlank String category
+    ) {
+        return companySizeTechStackQueryService.execute(companySize, category);
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -163,6 +164,49 @@ public class DashboardQueryRepository {
                 .list();
     }
 
+    public List<CompanySizeTechStack> findTechStacksByCompanySizeAndMajor(
+            Collection<String> companySizes,
+            Integer majorId,
+            int limit
+    ) {
+        return jdbcClient.sql("""
+                        with target_postings as (
+                            select posting.id
+                            from market.job_posting posting
+                            join market.company company
+                              on company.id = posting.company_id
+                            where company.size_type in (:companySizes)
+                              and posting.field_id = :majorId
+                        ),
+                        total as (
+                            select count(*) as posting_count
+                            from target_postings
+                        )
+                        select skill.name,
+                               count(*) as skill_count,
+                               cast(round(
+                                   count(*) * 100.0 / nullif(total.posting_count, 0)
+                               ) as integer) as percentage
+                        from target_postings target
+                        join market.posting_skill posting_skill
+                          on posting_skill.posting_id = target.id
+                        join market.skill skill
+                          on skill.id = posting_skill.skill_id
+                        cross join total
+                        group by skill.id, skill.name, total.posting_count
+                        order by percentage desc, skill_count desc, skill.name asc
+                        limit :limit
+                        """)
+                .param("companySizes", companySizes)
+                .param("majorId", majorId)
+                .param("limit", limit)
+                .query((resultSet, rowNumber) -> new CompanySizeTechStack(
+                        resultSet.getString("name"),
+                        resultSet.getInt("percentage")
+                ))
+                .list();
+    }
+
     public record MentionedTech(String name, long count) {
     }
 
@@ -170,5 +214,8 @@ public class DashboardQueryRepository {
     }
 
     public record PopularTechStack(Integer id, String name, long count) {
+    }
+
+    public record CompanySizeTechStack(String name, int percentage) {
     }
 }
