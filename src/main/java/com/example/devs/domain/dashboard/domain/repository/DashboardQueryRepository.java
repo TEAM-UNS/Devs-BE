@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -113,9 +114,61 @@ public class DashboardQueryRepository {
                 .optional();
     }
 
+    public List<PopularTechStack> findPopularTechStacks(int limit) {
+        return jdbcClient.sql("""
+                        select skill.id as tech_stack_id,
+                               skill.name,
+                               count(*) as posting_count
+                        from market.posting_skill posting_skill
+                        join market.skill skill
+                          on skill.id = posting_skill.skill_id
+                        group by skill.id, skill.name
+                        order by posting_count desc, skill.name asc
+                        limit :limit
+                        """)
+                .param("limit", limit)
+                .query((resultSet, rowNumber) -> new PopularTechStack(
+                        resultSet.getInt("tech_stack_id"),
+                        resultSet.getString("name"),
+                        resultSet.getLong("posting_count")
+                ))
+                .list();
+    }
+
+    public List<PopularTechStack> findPopularTechStacksByMajorId(
+            Integer majorId,
+            int limit
+    ) {
+        return jdbcClient.sql("""
+                        select skill.id as tech_stack_id,
+                               skill.name,
+                               count(*) as posting_count
+                        from market.posting_skill posting_skill
+                        join market.skill skill
+                          on skill.id = posting_skill.skill_id
+                        join market.job_posting posting
+                          on posting.id = posting_skill.posting_id
+                        where posting.field_id = :majorId
+                        group by skill.id, skill.name
+                        order by posting_count desc, skill.name asc
+                        limit :limit
+                        """)
+                .param("majorId", majorId)
+                .param("limit", limit)
+                .query((resultSet, rowNumber) -> new PopularTechStack(
+                        resultSet.getInt("tech_stack_id"),
+                        resultSet.getString("name"),
+                        resultSet.getLong("posting_count")
+                ))
+                .list();
+    }
+
     public record MentionedTech(String name, long count) {
     }
 
     public record RisingTech(String name, int rate) {
+    }
+
+    public record PopularTechStack(Integer id, String name, long count) {
     }
 }
