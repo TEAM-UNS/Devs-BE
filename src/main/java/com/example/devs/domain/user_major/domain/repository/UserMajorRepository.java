@@ -6,7 +6,12 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface UserMajorRepository extends JpaRepository<UserMajor, Long> {
+    @Query("select userMajor.major.id from UserMajor userMajor where userMajor.user.id = :userId")
+    List<Integer> findMajorIdsByUserId(@Param("userId") Long userId);
+
     @Modifying(flushAutomatically = true)
     @Query("delete from UserMajor userMajor where userMajor.user.id = :userId")
     int deleteAllByUserId(@Param("userId") Long userId);

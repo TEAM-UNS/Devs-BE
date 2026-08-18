@@ -10,6 +10,10 @@ import java.util.Collection;
 
 public interface UserSkillRepository extends JpaRepository<UserSkill, Long> {
     @Modifying(flushAutomatically = true)
+    @Query("delete from UserSkill userSkill where userSkill.user.id = :userId")
+    int deleteAllByUserId(@Param("userId") Long userId);
+
+    @Modifying(flushAutomatically = true)
     @Query("""
             delete from UserSkill userSkill
             where userSkill.user.id = :userId

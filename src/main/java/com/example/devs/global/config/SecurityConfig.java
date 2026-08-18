@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/reissue").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/user/major").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/user/tech-stack").authenticated()
 
                         //major
                         .requestMatchers(HttpMethod.GET, "/majors").permitAll()

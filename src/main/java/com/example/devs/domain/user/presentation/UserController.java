@@ -21,6 +21,7 @@ public class UserController {
     private final EmailSendService emailSendService;
     private final EmailVerificationService emailVerificationService;
     private final UserMajorUpdateService userMajorUpdateService;
+    private final UserTechStackUpdateService userTechStackUpdateService;
 
     @PostMapping("/email/send")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -52,8 +53,19 @@ public class UserController {
 
     @PutMapping("/major")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateMajor(@AuthenticationPrincipal JwtPrincipal principal, @Valid @RequestBody UserMajorUpdateRequest request) {
+    public void updateMajor(
+            @AuthenticationPrincipal JwtPrincipal principal,
+            @Valid @RequestBody UserMajorUpdateRequest request
+    ) {
         userMajorUpdateService.execute(principal.userId(), request);
     }
 
+    @PutMapping("/tech-stack")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateTechStack(
+            @AuthenticationPrincipal JwtPrincipal principal,
+            @Valid @RequestBody UserTechStackUpdateRequest request
+    ) {
+        userTechStackUpdateService.execute(principal.userId(), request);
+    }
 }
