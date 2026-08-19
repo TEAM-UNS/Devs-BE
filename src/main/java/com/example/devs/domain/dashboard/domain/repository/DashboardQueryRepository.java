@@ -208,7 +208,47 @@ public class DashboardQueryRepository {
                 .list();
     }
 
-    public List<TechStackTrendPoint> findTechStackTrendPoints(
+    public List<CompanySizeTechStack> findTechStacksByCompanySize(
+            Collection<String> companySizes,
+            int limit
+    ) {
+        return jdbcClient.sql("""
+                        with target_postings as (
+                            select posting.id
+                            from market.job_posting posting
+                            join market.company company
+                              on company.id = posting.company_id
+                            where company.size_type in (:companySizes)
+                        ),
+                        total as (
+                            select count(*) as posting_count
+                            from target_postings
+                        )
+                        select skill.name,
+                               count(*) as skill_count,
+                               cast(round(
+                                   count(*) * 100.0 / nullif(total.posting_count, 0)
+                               ) as integer) as percentage
+                        from target_postings target
+                        join market.posting_skill posting_skill
+                          on posting_skill.posting_id = target.id
+                        join market.skill skill
+                          on skill.id = posting_skill.skill_id
+                        cross join total
+                        group by skill.id, skill.name, total.posting_count
+                        order by percentage desc, skill_count desc, skill.name asc
+                        limit :limit
+                        """)
+                .param("companySizes", companySizes)
+                .param("limit", limit)
+                .query((resultSet, rowNumber) -> new CompanySizeTechStack(
+                        resultSet.getString("name"),
+                        resultSet.getInt("percentage")
+                ))
+                .list();
+    }
+
+    public List<TechStackTrendPoint> findTechStackTrendPointsByMajorId(
             Integer majorId,
             OffsetDateTime start,
             OffsetDateTime end,
@@ -234,6 +274,41 @@ public class DashboardQueryRepository {
                         order by skill.id, bucket_date
                         """)
                 .param("majorId", majorId)
+                .param("start", start)
+                .param("end", end)
+                .param("bucketUnit", bucketUnit)
+                .query((resultSet, rowNumber) -> new TechStackTrendPoint(
+                        resultSet.getInt("tech_stack_id"),
+                        resultSet.getString("name"),
+                        resultSet.getObject("bucket_date", LocalDate.class),
+                        resultSet.getLong("posting_count")
+                ))
+                .list();
+    }
+
+    public List<TechStackTrendPoint> findTechStackTrendPoints(
+            OffsetDateTime start,
+            OffsetDateTime end,
+            String bucketUnit
+    ) {
+        return jdbcClient.sql("""
+                        select skill.id as tech_stack_id,
+                               skill.name,
+                               cast(date_trunc(
+                                   :bucketUnit,
+                                   timezone('Asia/Seoul', posting.posted_at)
+                               ) as date) as bucket_date,
+                               count(*) as posting_count
+                        from market.posting_skill posting_skill
+                        join market.skill skill
+                          on skill.id = posting_skill.skill_id
+                        join market.job_posting posting
+                          on posting.id = posting_skill.posting_id
+                        where posting.posted_at >= :start
+                          and posting.posted_at < :end
+                        group by skill.id, skill.name, bucket_date
+                        order by skill.id, bucket_date
+                        """)
                 .param("start", start)
                 .param("end", end)
                 .param("bucketUnit", bucketUnit)

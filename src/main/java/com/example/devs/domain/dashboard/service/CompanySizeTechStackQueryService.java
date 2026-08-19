@@ -28,11 +28,17 @@ public class CompanySizeTechStackQueryService {
             CompanySize companySize,
             Integer majorId
     ) {
-        TechField major = techFieldRepository.findById(majorId)
-                .orElseThrow(MajorNotFoundException::new);
+        TechField major = majorId == null
+                ? null
+                : techFieldRepository.findById(majorId)
+                        .orElseThrow(MajorNotFoundException::new);
 
-        List<DashboardQueryRepository.CompanySizeTechStack> techStacks =
-                dashboardQueryRepository.findTechStacksByCompanySizeAndMajor(
+        List<DashboardQueryRepository.CompanySizeTechStack> techStacks = major == null
+                ? dashboardQueryRepository.findTechStacksByCompanySize(
+                        companySize.databaseValues(),
+                        TECH_STACK_LIMIT
+                )
+                : dashboardQueryRepository.findTechStacksByCompanySizeAndMajor(
                         companySize.databaseValues(),
                         major.getId(),
                         TECH_STACK_LIMIT
@@ -46,9 +52,13 @@ public class CompanySizeTechStackQueryService {
                 ))
                 .toList();
 
+        String category = major == null
+                ? null
+                : major.getCode().toUpperCase(Locale.ROOT);
+
         return new CompanySizeTechStackListResponse(
                 companySize.name(),
-                major.getCode().toUpperCase(Locale.ROOT),
+                category,
                 responses
         );
     }

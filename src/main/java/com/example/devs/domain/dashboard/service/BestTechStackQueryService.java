@@ -33,7 +33,7 @@ public class BestTechStackQueryService {
 
     @Transactional(readOnly = true)
     public BestTechStackListResponse execute(TechTrendPeriod period, Integer majorId) {
-        if (!techFieldRepository.existsById(majorId)) {
+        if (majorId != null && !techFieldRepository.existsById(majorId)) {
             throw new MajorNotFoundException();
         }
 
@@ -46,8 +46,13 @@ public class BestTechStackQueryService {
                 .atStartOfDay(SEOUL)
                 .toOffsetDateTime();
 
-        List<DashboardQueryRepository.TechStackTrendPoint> points =
-                dashboardQueryRepository.findTechStackTrendPoints(
+        List<DashboardQueryRepository.TechStackTrendPoint> points = majorId == null
+                ? dashboardQueryRepository.findTechStackTrendPoints(
+                        start,
+                        end,
+                        period.bucketUnit()
+                )
+                : dashboardQueryRepository.findTechStackTrendPointsByMajorId(
                         majorId,
                         start,
                         end,
