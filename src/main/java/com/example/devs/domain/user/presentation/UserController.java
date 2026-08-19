@@ -48,13 +48,11 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public TokenResponse login(@Valid @RequestBody UserLoginRequest request) {
         return userLoginService.execute(request);
     }
 
     @PostMapping("/reissue")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public AccessTokenResponse reissue(@RequestHeader("X-Refresh-Token") String refreshToken) {
         return tokenReissueService.execute(refreshToken);
     }
