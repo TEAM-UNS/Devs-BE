@@ -1,0 +1,82 @@
+package com.example.devs.domain.user.service;
+
+import com.example.devs.domain.user.domain.PersonalHistory;
+import com.example.devs.domain.user.domain.User;
+import com.example.devs.domain.user.domain.repository.UserRepository;
+import com.example.devs.domain.user.exception.InvalidGitHubOAuthProfileException;
+import com.example.devs.domain.user.presentation.dto.response.OAuthTokenResponse;
+import com.example.devs.domain.user.util.EmailNormalizer;
+import com.example.devs.domain.user_major.domain.repository.UserMajorRepository;
+import com.example.devs.domain.user_skill.domain.repository.UserSkillRepository;
+import com.example.devs.global.security.jwt.JwtProvider;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
+
+import static com.example.devs.domain.user.domain.User.resolveName;
+
+@Service
+@RequiredArgsConstructor
+public class GitHubOAuthLoginService {
+    private final UserRepository userRepository;
+    private final UserMajorRepository userMajorRepository;
+    private final UserSkillRepository userSkillRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
+
+    @Transactional
+    public OAuthTokenResponse execute(OAuth2User oauth2User) {
+        if (oauth2User == null) {
+            throw new InvalidGitHubOAuthProfileException();
+        }
+
+        String email = normalizeGitHubEmail(oauth2User.getAttribute("email"));
+        String name = resolveName(resolveGitHubName(oauth2User), email);
+
+        User user = userRepository.findByEmail(email)
+                .orElseGet(() -> createUser(email, name));
+
+        String accessToken = jwtProvider.generateAccessToken(user);
+        String refreshToken = jwtProvider.generateRefreshToken(user);
+        refreshTokenService.save(user.getId(), refreshToken);
+
+        boolean onboardingRequired = !userMajorRepository.existsByUserId(user.getId())
+                || !userSkillRepository.existsByUserId(user.getId());
+
+        return new OAuthTokenResponse(
+                accessToken,
+                refreshToken,
+                onboardingRequired
+        );
+    }
+
+    private String resolveGitHubName(OAuth2User oauth2User) {
+        String name = oauth2User.getAttribute("name");
+        return name != null && !name.isBlank()
+                ? name
+                : oauth2User.getAttribute("login");
+    }
+
+    private String normalizeGitHubEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new InvalidGitHubOAuthProfileException();
+        }
+        return EmailNormalizer.normalize(email);
+    }
+
+    private User createUser(String email, String name) {
+        User user = User.builder()
+                .email(email)
+                .name(name)
+                .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                .personalHistory(PersonalHistory.NO_EXPERIENCE)
+                .build();
+
+        return userRepository.save(user);
+    }
+}

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,6 +27,7 @@ public class UserController {
     private final UserMajorUpdateService userMajorUpdateService;
     private final UserTechStackUpdateService userTechStackUpdateService;
     private final GoogleOAuthLoginService googleOAuthLoginService;
+    private final GitHubOAuthLoginService gitHubOAuthLoginService;
 
     @PostMapping("/email/send")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -57,16 +59,30 @@ public class UserController {
         return tokenReissueService.execute(refreshToken);
     }
 
-    @PostMapping("/oauth/token")
-    public OAuthTokenResponse issueOAuthToken(
+    @PostMapping("/oauth/google/token")
+    public OAuthTokenResponse issueGoogleOAuthToken(
             @AuthenticationPrincipal OidcUser oidcUser,
             HttpServletRequest servletRequest
     ) {
         OAuthTokenResponse response = googleOAuthLoginService.execute(oidcUser);
+        invalidateSession(servletRequest);
+        return response;
+    }
+
+    @PostMapping("/oauth/github/token")
+    public OAuthTokenResponse issueGitHubOAuthToken(
+            @AuthenticationPrincipal OAuth2User oauth2User,
+            HttpServletRequest servletRequest
+    ) {
+        OAuthTokenResponse response = gitHubOAuthLoginService.execute(oauth2User);
+        invalidateSession(servletRequest);
+        return response;
+    }
+
+    private void invalidateSession(HttpServletRequest servletRequest) {
         if (servletRequest.getSession(false) != null) {
             servletRequest.getSession(false).invalidate();
         }
-        return response;
     }
 
     @PutMapping("/major")
