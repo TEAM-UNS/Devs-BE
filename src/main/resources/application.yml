@@ -46,3 +46,6 @@ jwt:
   secret: ${JWT_SECRET}
   access-expiration: 30m
   refresh-expiration: 14d
+
+oauth:
+  frontend-redirect-uri: ${OAUTH_FRONTEND_REDIRECT_URI:http://localhost:5173/oauth/callback}

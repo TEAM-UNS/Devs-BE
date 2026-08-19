@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface UserMajorRepository extends JpaRepository<UserMajor, Long> {
+    boolean existsByUserId(Long userId);
+
     @Query("select userMajor.major.id from UserMajor userMajor where userMajor.user.id = :userId")
     List<Integer> findMajorIdsByUserId(@Param("userId") Long userId);
 

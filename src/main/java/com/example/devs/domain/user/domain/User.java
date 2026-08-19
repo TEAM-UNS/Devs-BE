@@ -1,5 +1,7 @@
 package com.example.devs.domain.user.domain;
 
+import com.example.devs.domain.user.exception.InvalidOAuthProfileException;
+import com.example.devs.domain.user.util.EmailNormalizer;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,5 +32,19 @@ public class User {
 
     public void updatePersonalHistory(PersonalHistory personalHistory) {
         this.personalHistory = personalHistory;
+    }
+
+    public static String normalizeEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new InvalidOAuthProfileException();
+        }
+        return EmailNormalizer.normalize(email);
+    }
+
+    public static String resolveName(String name, String email) {
+        if (name != null && !name.isBlank()) {
+            return name;
+        }
+        return email.substring(0, email.indexOf('@'));
     }
 }

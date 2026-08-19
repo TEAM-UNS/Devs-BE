@@ -2,6 +2,7 @@ package com.example.devs.global.config;
 
 import com.example.devs.global.security.jwt.JwtAuthenticationFilter;
 import com.example.devs.global.security.jwt.JwtProperties;
+import com.example.devs.global.security.oauth.OAuthProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,9 +24,10 @@ import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableConfigurationProperties(JwtProperties.class)
+@EnableConfigurationProperties({JwtProperties.class, OAuthProperties.class})
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final OAuthProperties oauthProperties;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -52,8 +54,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/user/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/reissue").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/oauth/token").hasAuthority("OIDC_USER")
                         .requestMatchers(HttpMethod.PUT, "/user/major").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/user/tech-stack").authenticated()
+
+                        //oauth
+                        .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
 
                         //major
                         .requestMatchers(HttpMethod.GET, "/majors").permitAll()
@@ -65,6 +71,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/dashboard/best-tech-stacks").authenticated()
 
                         .anyRequest().denyAll())
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl(
+                                oauthProperties.frontendRedirectUri().toString(),
+                                true
+                        ))
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .addFilterBefore(
