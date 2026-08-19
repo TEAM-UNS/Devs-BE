@@ -47,6 +47,9 @@ dependencies {
 	//postgresql
 	runtimeOnly 'org.postgresql:postgresql'
 
+	//oauth
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 	testCompileOnly 'org.projectlombok:lombok'
