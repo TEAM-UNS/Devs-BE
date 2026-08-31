@@ -73,6 +73,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/dashboard/company-size-tech-stacks").authenticated()
                         .requestMatchers(HttpMethod.GET, "/dashboard/best-tech-stacks").authenticated()
 
+                        //report
+                        .requestMatchers(HttpMethod.GET, "/report/popular-tech-stack").authenticated()
+
                         .anyRequest().denyAll())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
