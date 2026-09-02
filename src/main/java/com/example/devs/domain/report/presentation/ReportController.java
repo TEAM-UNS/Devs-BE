@@ -2,10 +2,12 @@ package com.example.devs.domain.report.presentation;
 
 import com.example.devs.domain.report.domain.ReportPeriod;
 import com.example.devs.domain.report.presentation.dto.response.PopularTechStackReportResponse;
+import com.example.devs.domain.report.presentation.dto.response.TechMentionListResponse;
 import com.example.devs.domain.report.presentation.dto.response.TechTrendResponse;
 import com.example.devs.domain.report.service.GetMaxDecreaseTechTrendService;
 import com.example.devs.domain.report.service.GetMaxIncreaseTechTrendService;
 import com.example.devs.domain.report.service.PopularTechStackReportService;
+import com.example.devs.domain.report.service.TechMentionQueryService;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,6 +25,7 @@ public class ReportController {
     private final PopularTechStackReportService popularTechStackReportService;
     private final GetMaxIncreaseTechTrendService getMaxIncreaseTechTrendService;
     private final GetMaxDecreaseTechTrendService getMaxDecreaseTechTrendService;
+    private final TechMentionQueryService techMentionQueryService;
 
     @GetMapping("/popular-tech-stack")
     public PopularTechStackReportResponse getPopularTechStackReport(
@@ -51,5 +54,15 @@ public class ReportController {
             LocalDate baseDate
     ) {
         return getMaxDecreaseTechTrendService.execute(baseDate);
+    }
+
+    @GetMapping("/tech-mentions")
+    public TechMentionListResponse getTechMentions(
+            @RequestParam(name = "major_id", required = false) @Positive Integer majorId,
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        return techMentionQueryService.execute(majorId, baseDate);
     }
 }

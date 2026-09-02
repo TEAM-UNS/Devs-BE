@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface PostingSkillRepository extends JpaRepository<PostingSkill, PostingSkillId> {
-
+    
     @Query("""
         SELECT
             ps.skill.id AS skillId,
