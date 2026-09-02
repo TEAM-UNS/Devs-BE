@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +19,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WeeklyTechTrendCalculator {
 
+    private static final ZoneId SEOUL = ZoneId.of("Asia/Seoul");
+
     private final PostingSkillRepository postingSkillRepository;
 
-    public List<TechTrend> calculate() {
-        OffsetDateTime thisWeekStart = getThisWeekStart();
+    public List<TechTrend> calculate(LocalDate baseDate) {
+        OffsetDateTime thisWeekStart = baseDate
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                .atStartOfDay(SEOUL)
+                .toOffsetDateTime();
         OffsetDateTime lastWeekStart = thisWeekStart.minusWeeks(1);
         OffsetDateTime nextWeekStart = thisWeekStart.plusWeeks(1);
 
@@ -84,13 +91,4 @@ public class WeeklyTechTrendCalculator {
                 / previousCount) * 100;
     }
 
-    private OffsetDateTime getThisWeekStart() {
-        OffsetDateTime now = OffsetDateTime.now();
-
-        return now
-                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-                .toLocalDate()
-                .atStartOfDay()
-                .atOffset(now.getOffset());
-    }
 }

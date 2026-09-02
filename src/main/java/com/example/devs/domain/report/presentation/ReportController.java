@@ -36,12 +36,20 @@ public class ReportController {
     }
 
     @GetMapping("/max-increase")
-    public TechTrendResponse getMaxIncrease() {
-        return getMaxIncreaseTechTrendService.execute();
+    public TechTrendResponse getMaxIncrease(
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        return getMaxIncreaseTechTrendService.execute(baseDate);
     }
 
     @GetMapping("/max-decrease")
-    public TechTrendResponse getMaxDecrease() {
-        return getMaxDecreaseTechTrendService.execute();
+    public TechTrendResponse getMaxDecrease(
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        return getMaxDecreaseTechTrendService.execute(baseDate);
     }
 }

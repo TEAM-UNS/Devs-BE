@@ -6,6 +6,8 @@ import com.example.devs.domain.report.presentation.dto.response.TechTrendRespons
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 import java.util.Comparator;
 
 @Service
@@ -15,9 +17,9 @@ public class GetMaxDecreaseTechTrendService {
     private final WeeklyTechTrendCalculator weeklyTechTrendCalculator;
 
     @Transactional(readOnly = true)
-    public TechTrendResponse execute() {
+    public TechTrendResponse execute(LocalDate baseDate) {
 
-        TechTrend trend = weeklyTechTrendCalculator.calculate()
+        TechTrend trend = weeklyTechTrendCalculator.calculate(baseDate)
                 .stream()
                 .filter(it -> it.changeRate() < 0)
                 .min(Comparator.comparingDouble(TechTrend::changeRate))
