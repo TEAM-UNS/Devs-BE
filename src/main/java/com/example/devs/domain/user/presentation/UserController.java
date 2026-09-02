@@ -77,12 +77,6 @@ public class UserController {
         return response;
     }
 
-    private void invalidateSession(HttpServletRequest servletRequest) {
-        if (servletRequest.getSession(false) != null) {
-            servletRequest.getSession(false).invalidate();
-        }
-    }
-
     @PutMapping("/major")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateMajor(
@@ -99,5 +93,10 @@ public class UserController {
             @Valid @RequestBody UserTechStackUpdateRequest request
     ) {
         userTechStackUpdateService.execute(principal.userId(), request);
+    }
+    private void invalidateSession(HttpServletRequest servletRequest) {
+        if (servletRequest.getSession(false) != null) {
+            servletRequest.getSession(false).invalidate();
+        }
     }
 }

@@ -73,6 +73,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/dashboard/company-size-tech-stacks").authenticated()
                         .requestMatchers(HttpMethod.GET, "/dashboard/best-tech-stacks").authenticated()
 
+                        //report
+                        .requestMatchers(HttpMethod.GET, "/report/popular-tech-stack").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/report/max-increase").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/report/max-decrease").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/report/tech-mentions").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/report/weekly-collected-count").authenticated()
+
                         .anyRequest().denyAll())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
