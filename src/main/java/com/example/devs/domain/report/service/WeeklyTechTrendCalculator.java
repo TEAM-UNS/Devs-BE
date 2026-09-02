@@ -54,16 +54,16 @@ public class WeeklyTechTrendCalculator {
     ) {
         Map<Integer, Long> lastWeekMap = lastWeek.stream()
                 .collect(Collectors.toMap(
-                        SkillCountProjection::getSkillId,
-                        SkillCountProjection::getMentionCount
+                        SkillCountProjection::skillId,
+                        SkillCountProjection::mentionCount
                 ));
 
         return thisWeek.stream()
                 .map(skill -> {
-                    long currentCount = skill.getMentionCount();
+                    long currentCount = skill.mentionCount();
 
                     long previousCount = lastWeekMap.getOrDefault(
-                            skill.getSkillId(),
+                            skill.skillId(),
                             0L
                     );
 
@@ -71,8 +71,8 @@ public class WeeklyTechTrendCalculator {
                             calculateChangeRate(previousCount, currentCount);
 
                     return new TechTrend(
-                            skill.getSkillId(),
-                            skill.getSkillName(),
+                            skill.skillId(),
+                            skill.skillName(),
                             previousCount,
                             currentCount,
                             changeRate
