@@ -40,20 +40,22 @@ public class ReportController {
 
     @GetMapping("/max-increase")
     public TechTrendResponse getMaxIncrease(
+            @RequestParam(name = "major_id", required = false) @Positive Integer majorId,
             @RequestParam(name = "base_date")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate baseDate
     ) {
-        return getMaxIncreaseTechTrendService.execute(baseDate);
+        return getMaxIncreaseTechTrendService.execute(majorId, baseDate);
     }
 
     @GetMapping("/max-decrease")
     public TechTrendResponse getMaxDecrease(
+            @RequestParam(name = "major_id", required = false) @Positive Integer majorId,
             @RequestParam(name = "base_date")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate baseDate
     ) {
-        return getMaxDecreaseTechTrendService.execute(baseDate);
+        return getMaxDecreaseTechTrendService.execute(majorId, baseDate);
     }
 
     @GetMapping("/tech-mentions")

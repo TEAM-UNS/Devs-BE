@@ -23,7 +23,7 @@ public class WeeklyTechTrendCalculator {
 
     private final PostingSkillRepository postingSkillRepository;
 
-    public List<TechTrend> calculate(LocalDate baseDate) {
+    public List<TechTrend> calculate(Integer majorId, LocalDate baseDate) {
         OffsetDateTime thisWeekStart = baseDate
                 .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
                 .atStartOfDay(SEOUL)
@@ -33,12 +33,14 @@ public class WeeklyTechTrendCalculator {
 
         List<SkillCountProjection> lastWeek =
                 postingSkillRepository.findSkillCountsByPeriod(
+                        majorId,
                         lastWeekStart,
                         thisWeekStart
                 );
 
         List<SkillCountProjection> thisWeek =
                 postingSkillRepository.findSkillCountsByPeriod(
+                        majorId,
                         thisWeekStart,
                         nextWeekStart
                 );
