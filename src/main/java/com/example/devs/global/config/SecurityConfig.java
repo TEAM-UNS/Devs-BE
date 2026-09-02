@@ -75,6 +75,8 @@ public class SecurityConfig {
 
                         //report
                         .requestMatchers(HttpMethod.GET, "/report/popular-tech-stack").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/report/max-increase").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/report/max-decrease").authenticated()
 
                         .anyRequest().denyAll())
                 .oauth2Login(oauth2 -> oauth2

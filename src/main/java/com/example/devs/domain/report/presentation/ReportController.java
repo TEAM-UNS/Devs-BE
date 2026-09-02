@@ -2,6 +2,9 @@ package com.example.devs.domain.report.presentation;
 
 import com.example.devs.domain.report.domain.ReportPeriod;
 import com.example.devs.domain.report.presentation.dto.response.PopularTechStackReportResponse;
+import com.example.devs.domain.report.presentation.dto.response.TechTrendResponse;
+import com.example.devs.domain.report.service.GetMaxDecreaseTechTrendService;
+import com.example.devs.domain.report.service.GetMaxIncreaseTechTrendService;
 import com.example.devs.domain.report.service.PopularTechStackReportService;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,8 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class ReportController {
     private final PopularTechStackReportService popularTechStackReportService;
+    private final GetMaxIncreaseTechTrendService getMaxIncreaseTechTrendService;
+    private final GetMaxDecreaseTechTrendService getMaxDecreaseTechTrendService;
 
     @GetMapping("/popular-tech-stack")
     public PopularTechStackReportResponse getPopularTechStackReport(
@@ -28,5 +33,15 @@ public class ReportController {
             LocalDate baseDate
     ) {
         return popularTechStackReportService.execute(majorId, period, baseDate);
+    }
+
+    @GetMapping("/max-increase")
+    public TechTrendResponse getMaxIncrease() {
+        return getMaxIncreaseTechTrendService.execute();
+    }
+
+    @GetMapping("/max-decrease")
+    public TechTrendResponse getMaxDecrease() {
+        return getMaxDecreaseTechTrendService.execute();
     }
 }
