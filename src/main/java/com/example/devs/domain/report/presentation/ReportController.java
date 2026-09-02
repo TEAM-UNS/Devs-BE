@@ -4,10 +4,12 @@ import com.example.devs.domain.report.domain.ReportPeriod;
 import com.example.devs.domain.report.presentation.dto.response.PopularTechStackReportResponse;
 import com.example.devs.domain.report.presentation.dto.response.TechMentionListResponse;
 import com.example.devs.domain.report.presentation.dto.response.TechTrendResponse;
+import com.example.devs.domain.report.presentation.dto.response.WeeklyCollectedPostingCountResponse;
 import com.example.devs.domain.report.service.GetMaxDecreaseTechTrendService;
 import com.example.devs.domain.report.service.GetMaxIncreaseTechTrendService;
 import com.example.devs.domain.report.service.PopularTechStackReportService;
 import com.example.devs.domain.report.service.TechMentionQueryService;
+import com.example.devs.domain.report.service.WeeklyCollectedPostingCountService;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -26,6 +28,7 @@ public class ReportController {
     private final GetMaxIncreaseTechTrendService getMaxIncreaseTechTrendService;
     private final GetMaxDecreaseTechTrendService getMaxDecreaseTechTrendService;
     private final TechMentionQueryService techMentionQueryService;
+    private final WeeklyCollectedPostingCountService weeklyCollectedPostingCountService;
 
     @GetMapping("/popular-tech-stack")
     public PopularTechStackReportResponse getPopularTechStackReport(
@@ -66,5 +69,10 @@ public class ReportController {
             LocalDate baseDate
     ) {
         return techMentionQueryService.execute(majorId, baseDate);
+    }
+
+    @GetMapping("/weekly-collected-count")
+    public WeeklyCollectedPostingCountResponse getWeeklyCollectedPostingCount() {
+        return weeklyCollectedPostingCountService.execute();
     }
 }

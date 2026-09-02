@@ -13,6 +13,22 @@ public class ReportQueryRepository {
 
     private final JdbcClient jdbcClient;
 
+    public long countCollectedPostings(
+            OffsetDateTime start,
+            OffsetDateTime end
+    ) {
+        return jdbcClient.sql("""
+                        select count(*)
+                        from market.job_posting
+                        where collected_at >= :start
+                          and collected_at < :end
+                        """)
+                .param("start", start)
+                .param("end", end)
+                .query(Long.class)
+                .single();
+    }
+
     public List<TechStackCount> findTechMentions(
             OffsetDateTime previousStart,
             OffsetDateTime currentStart,
