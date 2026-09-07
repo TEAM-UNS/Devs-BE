@@ -1,6 +1,8 @@
 package com.example.devs.domain.report.presentation;
 
 import com.example.devs.domain.report.domain.ReportPeriod;
+import com.example.devs.domain.report.presentation.dto.response.EarliestPostingDateResponse;
+import com.example.devs.domain.report.service.EarliestPostingDateService;
 import com.example.devs.domain.report.presentation.dto.response.PopularTechStackReportResponse;
 import com.example.devs.domain.report.presentation.dto.response.TechMentionListResponse;
 import com.example.devs.domain.report.presentation.dto.response.TechTrendResponse;
@@ -29,6 +31,12 @@ public class ReportController {
     private final GetMaxDecreaseTechTrendService getMaxDecreaseTechTrendService;
     private final TechMentionQueryService techMentionQueryService;
     private final WeeklyCollectedPostingCountService weeklyCollectedPostingCountService;
+    private final EarliestPostingDateService earliestPostingDateService;
+
+    @GetMapping("/earliest-posting-date")
+    public EarliestPostingDateResponse getEarliestPostingDate() {
+        return earliestPostingDateService.execute();
+    }
 
     @GetMapping("/popular-tech-stack")
     public PopularTechStackReportResponse getPopularTechStackReport(
@@ -72,7 +80,11 @@ public class ReportController {
     }
 
     @GetMapping("/weekly-collected-count")
-    public WeeklyCollectedPostingCountResponse getWeeklyCollectedPostingCount() {
-        return weeklyCollectedPostingCountService.execute();
+    public WeeklyCollectedPostingCountResponse getWeeklyCollectedPostingCount(
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        return weeklyCollectedPostingCountService.execute(baseDate);
     }
 }

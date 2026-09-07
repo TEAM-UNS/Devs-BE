@@ -1,5 +1,7 @@
 package com.example.devs.domain.report.domain.repository;
 
+import com.example.devs.domain.job_posting.domain.QJobPosting;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -12,6 +14,15 @@ import java.util.List;
 public class ReportQueryRepository {
 
     private final JdbcClient jdbcClient;
+    private final JPAQueryFactory queryFactory;
+
+    public OffsetDateTime findEarliestPostedAt() {
+        QJobPosting posting = QJobPosting.jobPosting;
+        return queryFactory
+                .select(posting.postedAt.min())
+                .from(posting)
+                .fetchOne();
+    }
 
     public long countCollectedPostings(
             OffsetDateTime start,
