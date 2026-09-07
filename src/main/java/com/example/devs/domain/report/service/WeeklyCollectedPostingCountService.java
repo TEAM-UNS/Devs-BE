@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -19,12 +18,10 @@ public class WeeklyCollectedPostingCountService {
     private static final ZoneId SEOUL = ZoneId.of("Asia/Seoul");
 
     private final ReportQueryRepository reportQueryRepository;
-    private final Clock clock;
 
     @Transactional(readOnly = true)
-    public WeeklyCollectedPostingCountResponse execute() {
-        LocalDate today = clock.instant().atZone(SEOUL).toLocalDate();
-        LocalDate monday = today.with(
+    public WeeklyCollectedPostingCountResponse execute(LocalDate baseDate) {
+        LocalDate monday = baseDate.with(
                 TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)
         );
 
