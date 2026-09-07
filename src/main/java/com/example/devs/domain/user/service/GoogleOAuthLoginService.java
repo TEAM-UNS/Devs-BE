@@ -5,6 +5,7 @@ import com.example.devs.domain.user.domain.User;
 import com.example.devs.domain.user.domain.repository.UserRepository;
 import com.example.devs.domain.user.exception.InvalidOAuthProfileException;
 import com.example.devs.domain.user.presentation.dto.response.OAuthTokenResponse;
+import com.example.devs.domain.user.presentation.dto.response.UserMajorResponse;
 import com.example.devs.domain.user.util.EmailNormalizer;
 import com.example.devs.domain.user_major.domain.repository.UserMajorRepository;
 import com.example.devs.domain.user_skill.domain.repository.UserSkillRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
+import java.util.List;
 
 import static com.example.devs.domain.user.domain.User.normalizeEmail;
 import static com.example.devs.domain.user.domain.User.resolveName;
@@ -42,17 +44,23 @@ public class GoogleOAuthLoginService {
         User user = userRepository.findByEmail(email)
                 .orElseGet(() -> createUser(email, name));
 
+        List<UserMajorResponse> majors = userMajorRepository.findMajorsByUserId(user.getId())
+                .stream()
+                .map(UserMajorResponse::from)
+                .toList();
+
         String accessToken = jwtProvider.generateAccessToken(user);
         String refreshToken = jwtProvider.generateRefreshToken(user);
         refreshTokenService.save(user.getId(), refreshToken);
 
-        boolean onboardingRequired = !userMajorRepository.existsByUserId(user.getId())
+        boolean onboardingRequired = majors.isEmpty()
                 || !userSkillRepository.existsByUserId(user.getId());
 
         return new OAuthTokenResponse(
                 accessToken,
                 refreshToken,
-                onboardingRequired
+                onboardingRequired,
+                majors
         );
     }
 

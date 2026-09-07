@@ -5,16 +5,21 @@ import com.example.devs.domain.user.domain.repository.UserRepository;
 import com.example.devs.domain.user.exception.InvalidLoginCredentialsException;
 import com.example.devs.domain.user.presentation.dto.request.UserLoginRequest;
 import com.example.devs.domain.user.presentation.dto.response.TokenResponse;
+import com.example.devs.domain.user.presentation.dto.response.UserMajorResponse;
+import com.example.devs.domain.user_major.domain.repository.UserMajorRepository;
 import com.example.devs.domain.user.util.EmailNormalizer;
 import com.example.devs.global.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserLoginService {
     private final UserRepository userRepository;
+    private final UserMajorRepository userMajorRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
@@ -28,6 +33,11 @@ public class UserLoginService {
             throw new InvalidLoginCredentialsException();
         }
 
+        List<UserMajorResponse> majors = userMajorRepository.findMajorsByUserId(user.getId())
+                .stream()
+                .map(UserMajorResponse::from)
+                .toList();
+
         String accessToken = jwtProvider.generateAccessToken(user);
         String refreshToken = jwtProvider.generateRefreshToken(user);
 
@@ -38,7 +48,8 @@ public class UserLoginService {
 
         return new TokenResponse(
                 accessToken,
-                refreshToken
+                refreshToken,
+                majors
         );
     }
 }
