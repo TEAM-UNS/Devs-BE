@@ -4,7 +4,7 @@ import com.example.devs.domain.user.domain.User;
 import com.example.devs.domain.user.domain.repository.UserRepository;
 import com.example.devs.domain.user.exception.InvalidLoginCredentialsException;
 import com.example.devs.domain.user.presentation.dto.request.UserLoginRequest;
-import com.example.devs.domain.user.presentation.dto.response.TokenResponse;
+import com.example.devs.domain.user.presentation.dto.response.LoginResponse;
 import com.example.devs.domain.user.presentation.dto.response.UserMajorResponse;
 import com.example.devs.domain.user_major.domain.repository.UserMajorRepository;
 import com.example.devs.domain.user.util.EmailNormalizer;
@@ -24,7 +24,7 @@ public class UserLoginService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
-    public TokenResponse execute(UserLoginRequest request) {
+    public LoginResponse execute(UserLoginRequest request) {
         String email = EmailNormalizer.normalize(request.email());
         User user = userRepository.findByEmail(email)
                 .orElseThrow(InvalidLoginCredentialsException::new);
@@ -46,7 +46,7 @@ public class UserLoginService {
                 refreshToken
         );
 
-        return new TokenResponse(
+        return new LoginResponse(
                 accessToken,
                 refreshToken,
                 majors

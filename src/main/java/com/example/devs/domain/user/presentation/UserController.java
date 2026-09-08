@@ -2,8 +2,8 @@ package com.example.devs.domain.user.presentation;
 
 import com.example.devs.domain.user.presentation.dto.request.*;
 import com.example.devs.domain.user.presentation.dto.response.AccessTokenResponse;
-import com.example.devs.domain.user.presentation.dto.response.OAuthTokenResponse;
-import com.example.devs.domain.user.presentation.dto.response.TokenResponse;
+import com.example.devs.domain.user.presentation.dto.response.OAuthLoginResponse;
+import com.example.devs.domain.user.presentation.dto.response.LoginResponse;
 import com.example.devs.domain.user.service.*;
 import com.example.devs.global.security.jwt.JwtPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public TokenResponse login(@Valid @RequestBody UserLoginRequest request) {
+    public LoginResponse login(@Valid @RequestBody UserLoginRequest request) {
         return userLoginService.execute(request);
     }
 
@@ -58,21 +58,21 @@ public class UserController {
     }
 
     @PostMapping("/oauth/google/token")
-    public OAuthTokenResponse issueGoogleOAuthToken(
+    public OAuthLoginResponse issueGoogleOAuthToken(
             @AuthenticationPrincipal OidcUser oidcUser,
             HttpServletRequest servletRequest
     ) {
-        OAuthTokenResponse response = googleOAuthLoginService.execute(oidcUser);
+        OAuthLoginResponse response = googleOAuthLoginService.execute(oidcUser);
         invalidateSession(servletRequest);
         return response;
     }
 
     @PostMapping("/oauth/github/token")
-    public OAuthTokenResponse issueGitHubOAuthToken(
+    public OAuthLoginResponse issueGitHubOAuthToken(
             @AuthenticationPrincipal OAuth2User oauth2User,
             HttpServletRequest servletRequest
     ) {
-        OAuthTokenResponse response = gitHubOAuthLoginService.execute(oauth2User);
+        OAuthLoginResponse response = gitHubOAuthLoginService.execute(oauth2User);
         invalidateSession(servletRequest);
         return response;
     }

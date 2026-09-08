@@ -4,7 +4,7 @@ import com.example.devs.domain.user.domain.PersonalHistory;
 import com.example.devs.domain.user.domain.User;
 import com.example.devs.domain.user.domain.repository.UserRepository;
 import com.example.devs.domain.user.exception.InvalidGitHubOAuthProfileException;
-import com.example.devs.domain.user.presentation.dto.response.OAuthTokenResponse;
+import com.example.devs.domain.user.presentation.dto.response.OAuthLoginResponse;
 import com.example.devs.domain.user.presentation.dto.response.UserMajorResponse;
 import com.example.devs.domain.user.util.EmailNormalizer;
 import com.example.devs.domain.user_major.domain.repository.UserMajorRepository;
@@ -32,7 +32,7 @@ public class GitHubOAuthLoginService {
     private final RefreshTokenService refreshTokenService;
 
     @Transactional
-    public OAuthTokenResponse execute(OAuth2User oauth2User) {
+    public OAuthLoginResponse execute(OAuth2User oauth2User) {
         if (oauth2User == null) {
             throw new InvalidGitHubOAuthProfileException();
         }
@@ -55,7 +55,7 @@ public class GitHubOAuthLoginService {
         boolean onboardingRequired = majors.isEmpty()
                 || !userSkillRepository.existsByUserId(user.getId());
 
-        return new OAuthTokenResponse(
+        return new OAuthLoginResponse(
                 accessToken,
                 refreshToken,
                 onboardingRequired,

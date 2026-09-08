@@ -2,7 +2,7 @@ package com.example.devs.domain.user.presentation.dto.response;
 
 import java.util.List;
 
-public record OAuthTokenResponse(
+public record OAuthLoginResponse(
         String accessToken,
         String refreshToken,
         boolean onboardingRequired,

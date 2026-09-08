@@ -4,9 +4,8 @@ import com.example.devs.domain.user.domain.PersonalHistory;
 import com.example.devs.domain.user.domain.User;
 import com.example.devs.domain.user.domain.repository.UserRepository;
 import com.example.devs.domain.user.exception.InvalidOAuthProfileException;
-import com.example.devs.domain.user.presentation.dto.response.OAuthTokenResponse;
+import com.example.devs.domain.user.presentation.dto.response.OAuthLoginResponse;
 import com.example.devs.domain.user.presentation.dto.response.UserMajorResponse;
-import com.example.devs.domain.user.util.EmailNormalizer;
 import com.example.devs.domain.user_major.domain.repository.UserMajorRepository;
 import com.example.devs.domain.user_skill.domain.repository.UserSkillRepository;
 import com.example.devs.global.security.jwt.JwtProvider;
@@ -33,7 +32,7 @@ public class GoogleOAuthLoginService {
     private final RefreshTokenService refreshTokenService;
 
     @Transactional
-    public OAuthTokenResponse execute(OidcUser oidcUser) {
+    public OAuthLoginResponse execute(OidcUser oidcUser) {
         if (oidcUser == null || !Boolean.TRUE.equals(oidcUser.getEmailVerified())) {
             throw new InvalidOAuthProfileException();
         }
@@ -56,7 +55,7 @@ public class GoogleOAuthLoginService {
         boolean onboardingRequired = majors.isEmpty()
                 || !userSkillRepository.existsByUserId(user.getId());
 
-        return new OAuthTokenResponse(
+        return new OAuthLoginResponse(
                 accessToken,
                 refreshToken,
                 onboardingRequired,
