@@ -1,6 +1,8 @@
 package com.example.devs.domain.report.presentation;
 
 import com.example.devs.domain.report.domain.ReportPeriod;
+import com.example.devs.domain.report.presentation.dto.response.LlmReportQueryResponse;
+import com.example.devs.domain.report.service.GetLlmQueryService;
 import com.example.devs.domain.report.presentation.dto.response.EarliestPostingDateResponse;
 import com.example.devs.domain.report.service.EarliestPostingDateService;
 import com.example.devs.domain.report.presentation.dto.response.PopularTechStackReportResponse;
@@ -16,6 +18,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +35,14 @@ public class ReportController {
     private final TechMentionQueryService techMentionQueryService;
     private final WeeklyCollectedPostingCountService weeklyCollectedPostingCountService;
     private final EarliestPostingDateService earliestPostingDateService;
+    private final GetLlmQueryService getLlmQueryService;
+
+    @GetMapping("/llm/{reportId}")
+    public LlmReportQueryResponse getLlmReport(
+            @PathVariable("reportId") @Positive Long reportId
+    ) {
+        return getLlmQueryService.getLlmReportQueryResponse(reportId);
+    }
 
     @GetMapping("/earliest-posting-date")
     public EarliestPostingDateResponse getEarliestPostingDate() {
