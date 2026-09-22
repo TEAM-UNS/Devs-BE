@@ -1,16 +1,13 @@
 package com.example.devs.domain.report.service;
 
 import com.example.devs.domain.report.domain.TechTrend;
+import com.example.devs.domain.report.domain.ReportWeek;
 import com.example.devs.domain.report.domain.repository.PostingSkillRepository;
 import com.example.devs.domain.report.domain.repository.SkillCountProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,30 +16,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WeeklyTechTrendCalculator {
 
-    private static final ZoneId SEOUL = ZoneId.of("Asia/Seoul");
-
     private final PostingSkillRepository postingSkillRepository;
 
     public List<TechTrend> calculate(Integer majorId, LocalDate baseDate) {
-        OffsetDateTime thisWeekStart = baseDate
-                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-                .atStartOfDay(SEOUL)
-                .toOffsetDateTime();
-        OffsetDateTime lastWeekStart = thisWeekStart.minusWeeks(1);
-        OffsetDateTime nextWeekStart = thisWeekStart.plusWeeks(1);
+        ReportWeek week = ReportWeek.from(baseDate);
 
         List<SkillCountProjection> lastWeek =
                 postingSkillRepository.findSkillCountsByPeriod(
                         majorId,
-                        lastWeekStart,
-                        thisWeekStart
+                        week.previousStart(),
+                        week.currentStart()
                 );
 
         List<SkillCountProjection> thisWeek =
                 postingSkillRepository.findSkillCountsByPeriod(
                         majorId,
-                        thisWeekStart,
-                        nextWeekStart
+                        week.currentStart(),
+                        week.currentEnd()
                 );
 
         return calculateChangeRates(lastWeek, thisWeek);

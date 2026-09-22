@@ -1,6 +1,7 @@
 package com.example.devs.domain.report.service;
 
 import com.example.devs.domain.report.domain.ReportPeriod;
+import com.example.devs.domain.report.domain.ReportWeek;
 import com.example.devs.domain.report.domain.Trend;
 import com.example.devs.domain.report.domain.repository.ReportQueryRepository;
 import com.example.devs.domain.report.presentation.dto.response.PopularTechStackReportItemResponse;
@@ -59,6 +60,13 @@ public class PopularTechStackReportService {
         );
     }
     private ReportDateRange calculateDateRange(ReportPeriod period, LocalDate baseDate) {
+        if (period == ReportPeriod.WEEK) {
+            ReportWeek week = ReportWeek.from(baseDate);
+            return new ReportDateRange(
+                    week.previousStart(), week.currentStart(), week.currentEnd()
+            );
+        }
+
         int periodDays = period.getDays();
 
         LocalDate currentStartDate = baseDate.minusDays(periodDays - 1L);
