@@ -35,14 +35,16 @@ public class PopularTechStackReportService {
             ReportPeriod period,
             LocalDate baseDate
     ) {
-        if (!techFieldRepository.existsById(majorId)) {
+        if (majorId != null && !techFieldRepository.existsById(majorId)) {
             throw new MajorNotFoundException();
         }
 
         ReportDateRange range = calculateDateRange(period, baseDate);
 
         List<ReportQueryRepository.TechStackCount> counts =
-                reportQueryRepository.findPopularTechStacks(
+                majorId == null ? reportQueryRepository.findTechMentions(
+                        range.previousStart(), range.currentStart(), range.currentEnd(), LIMIT
+                ) : reportQueryRepository.findPopularTechStacks(
                         majorId,
                         range.previousStart(),
                         range.currentStart(),
