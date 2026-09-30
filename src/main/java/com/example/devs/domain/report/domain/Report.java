@@ -17,11 +17,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Objects;
+import java.util.List;
 
 @Getter
 @Entity
@@ -51,20 +54,51 @@ public class Report {
     @Column(name = "llm_report", nullable = false, columnDefinition = "text")
     private String llmReport;
 
+    @Column(name = "weekly_collected_posting_count")
+    private Long weeklyCollectedPostingCount;
+
+    @Column(name = "earliest_posting_date")
+    private LocalDate earliestPostingDate;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "popular_tech_stacks", columnDefinition = "jsonb")
+    private List<WeeklyReportStatistics.PopularTechStack> popularTechStacks;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "tech_mentions", columnDefinition = "jsonb")
+    private List<WeeklyReportStatistics.TechMention> techMentions;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "max_increase_tech", columnDefinition = "jsonb")
+    private TechTrend maxIncreaseTech;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "max_decrease_tech", columnDefinition = "jsonb")
+    private TechTrend maxDecreaseTech;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 
-    public static Report createWeekly(TechField major, LocalDate baseDate, String llmReport) {
-        Objects.requireNonNull(baseDate, "baseDate must not be null");
+    public static Report createWeekly(
+            TechField major, LocalDate baseDate, String llmReport, WeeklyReportStatistics statistics
+    ) {
+        Objects.requireNonNull(baseDate, "기준 날짜는 필수입니다.");
+        Objects.requireNonNull(statistics, "주간 리포트 통계는 필수입니다.");
         if (llmReport == null || llmReport.isBlank()) {
-            throw new IllegalArgumentException("llmReport must not be blank");
+            throw new IllegalArgumentException("LLM 리포트 내용은 비어 있을 수 없습니다.");
         }
 
         Report report = new Report();
         report.major = major;
         report.weekStartDate = baseDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         report.llmReport = llmReport;
+        report.weeklyCollectedPostingCount = statistics.weeklyCollectedPostingCount();
+        report.earliestPostingDate = statistics.earliestPostingDate();
+        report.popularTechStacks = statistics.popularTechStacks();
+        report.techMentions = statistics.techMentions();
+        report.maxIncreaseTech = statistics.maxIncreaseTech();
+        report.maxDecreaseTech = statistics.maxDecreaseTech();
         return report;
     }
 }
