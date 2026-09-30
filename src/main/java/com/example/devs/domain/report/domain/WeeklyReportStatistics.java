@@ -13,7 +13,7 @@ public record WeeklyReportStatistics(
 ) {
     public WeeklyReportStatistics {
         if (weeklyCollectedPostingCount < 0) {
-            throw new IllegalArgumentException("weeklyCollectedPostingCount must not be negative");
+            throw new IllegalArgumentException("주간 수집 공고 수는 음수일 수 없습니다.");
         }
         popularTechStacks = List.copyOf(popularTechStacks);
         techMentions = List.copyOf(techMentions);
