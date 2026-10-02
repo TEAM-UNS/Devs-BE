@@ -11,4 +11,6 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
             Integer majorId,
             LocalDate weekStartDate
     );
+
+    boolean existsByMajor_IdAndWeekStartDate(Integer majorId, LocalDate weekStartDate);
 }
