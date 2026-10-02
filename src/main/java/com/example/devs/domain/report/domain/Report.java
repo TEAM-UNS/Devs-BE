@@ -51,7 +51,7 @@ public class Report {
     @Column(name = "week_start_date", nullable = false)
     private LocalDate weekStartDate;
 
-    @Column(name = "llm_report", nullable = false, columnDefinition = "text")
+    @Column(name = "llm_report", columnDefinition = "text")
     private String llmReport;
 
     @Column(name = "weekly_collected_posting_count")
@@ -85,7 +85,7 @@ public class Report {
     ) {
         Objects.requireNonNull(baseDate, "기준 날짜는 필수입니다.");
         Objects.requireNonNull(statistics, "주간 리포트 통계는 필수입니다.");
-        if (llmReport == null || llmReport.isBlank()) {
+        if (llmReport != null && llmReport.isBlank()) {
             throw new IllegalArgumentException("LLM 리포트 내용은 비어 있을 수 없습니다.");
         }
 
