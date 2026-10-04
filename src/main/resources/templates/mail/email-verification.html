@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 디자인이 다크 배경이라, 메일 앱이 색을 다시 뒤집지 않도록 다크 전용임을 알린다 -->
+    <meta name="color-scheme" content="dark" />
+    <meta name="supported-color-schemes" content="dark" />
+    <!-- iOS 메일이 6자리 숫자를 전화번호 링크(파란 밑줄)로 바꾸지 않게 한다 -->
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    <title>Devs 이메일 인증</title>
+
+    <!--
+      메일 클라이언트는 <style>을 지우거나 무시하는 경우가 많다(Gmail 일부, Outlook).
+      그래서 화면이 깨지면 안 되는 스타일은 전부 태그에 인라인으로 두고,
+      여기에는 "있으면 더 좋은" 보강만 둔다.
+    -->
+    <style>
+      /* 코드를 한 번 탭하면 6자리가 통째로 선택된다 (A) */
+      .code {
+        -webkit-user-select: all;
+        user-select: all;
+      }
+
+      /* 좁은 화면: 좌우 여백을 줄여 코드가 줄바꿈되지 않게 한다 */
+      @media only screen and (max-width: 480px) {
+        .card-body {
+          padding: 40px 20px !important;
+        }
+        .code {
+          font-size: 48px !important;
+          letter-spacing: 8px !important;
+          padding-left: 8px !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body style="margin: 0; padding: 0; background-color: #1e2126">
+    <!--
+      받은편지함 미리보기 문구. 메일 목록에서 제목 옆에 보이고, 본문에는 보이지 않는다.
+      뒤의 공백 문자들은 본문 첫 문장("데이터로 보여주는…")이 미리보기에 이어 붙는 것을 막는다.
+    -->
+    <div
+      style="display: none; max-height: 0; max-width: 0; overflow: hidden; opacity: 0;
+        font-size: 1px; line-height: 1px; color: #1e2126; mso-hide: all"
+    >
+      인증 코드 {{code}} · 5분 이내에 입력해 주세요.
+      &#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;
+    </div>
+
+    <!-- 바깥 래퍼: 메일 앱 배경을 카드와 같은 색으로 채운다 -->
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      style="background-color: #1e2126"
+    >
+      <tr>
+        <td align="center" style="padding: 0">
+          <!-- 카드: Figma 프레임 600 × 400, radius 16 -->
+          <table
+            role="presentation"
+            width="600"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="width: 100%; max-width: 600px; background-color: #1e2126; border-radius: 16px"
+          >
+            <tr>
+              <!-- 본문 378px를 가운데에 둔다: (600 - 378) / 2 = 111, (400 - 290) / 2 = 55 -->
+              <td
+                class="card-body"
+                align="center"
+                style="
+                  padding: 55px 111px;
+                  font-family: Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
+                    'Malgun Gothic', '맑은 고딕', sans-serif;
+                "
+              >
+                <!-- ───────── 헤더: 로고 + 제목 ───────── -->
+                <!-- Gmail은 data: URI 이미지를 지우므로 로고는 메일에 첨부(cid)해서 보여준다 -->
+                <img
+                  src="cid:devs-logo"
+                  width="84"
+                  height="16"
+                  alt="Devs"
+                  style="display: block; width: 84px; height: 16px; border: 0; outline: none"
+                />
+                <h1
+                  style="
+                    margin: 8px 0 0;
+                    font-size: 36px;
+                    font-weight: 600;
+                    line-height: 1.2;
+                    color: #ffffff;
+                  "
+                >
+                  이메일 인증
+                </h1>
+
+                <!-- ───────── 안내 문구 ───────── -->
+                <p
+                  style="
+                    margin: 20px 0 0;
+                    font-size: 12px;
+                    font-weight: 400;
+                    line-height: 1.5;
+                    color: #adb5bd;
+                    word-break: keep-all;
+                  "
+                >
+                  데이터로 보여주는 기술 트렌드, Devs에서 이메일 인증 코드를 보내드립니다.<br />
+                  아래의 인증 코드를 5분 이내에 입력해 주세요.
+                </p>
+
+                <!-- ───────── 인증 코드 ───────── -->
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="margin-top: 36px"
+                >
+                  <tr>
+                    <!-- Figma는 좌우 padding 36이지만, 숫자 폭이 글꼴마다 달라 박스를 밀어내므로
+                         폭은 표(378)가 정하고 숫자는 가운데 정렬만 한다 -->
+                    <td
+                      align="center"
+                      style="padding: 12px 0; background-color: #25292d; border-radius: 6px"
+                    >
+                      <!--
+                        숫자를 칸마다 나누지 않고 한 덩어리로 둔다.
+                        나누면 복사했을 때 숫자 사이에 공백·줄바꿈이 섞인다.
+                        Figma의 숫자 간격 12px는 letter-spacing으로 낸다 (B).
+                        letter-spacing은 마지막 글자 뒤에도 붙어서, 같은 만큼 왼쪽을 채워 가운데를 맞춘다.
+                      -->
+                      <span
+                        class="code"
+                        style="
+                          display: inline-block;
+                          padding-left: 12px;
+                          font-size: 64px;
+                          font-weight: 600;
+                          line-height: 1.2;
+                          letter-spacing: 12px;
+                          color: #ffffff;
+                          white-space: nowrap;
+                          -webkit-user-select: all;
+                          user-select: all;
+                        "
+                        >{{code}}</span
+                      >
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- ───────── 하단 안내 ───────── -->
+                <p
+                  style="
+                    margin: 12px 0 0;
+                    font-size: 12px;
+                    font-weight: 400;
+                    line-height: 1.5;
+                    color: #495057;
+                    word-break: keep-all;
+                  "
+                >
+                  유효 시간이 지났을 경우, 서비스 화면에서 [재전송] 버튼을 눌러주세요.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -8,11 +8,18 @@ import com.example.devs.domain.user.presentation.dto.request.EmailVerificationSe
 import com.example.devs.domain.user.util.EmailNormalizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Duration;
 
@@ -25,6 +32,9 @@ public class EmailSendService {
     private static final Duration CODE_EXPIRATION = Duration.ofMinutes(5);
     private static final Duration RESEND_COOLDOWN = Duration.ofMinutes(5);
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    private static final String TEMPLATE_PATH = "templates/mail/email-verification.html";
+    private static final ClassPathResource LOGO = new ClassPathResource("templates/mail/devs-logo.png");
+    private static final String TEMPLATE = loadTemplate();
 
     private final UserRepository userRepository;
     private final StringRedisTemplate redisTemplate;
@@ -61,13 +71,29 @@ public class EmailSendService {
         }
     }
 
-    private SimpleMailMessage createMessage(String email, String code) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(emailSender);
-        message.setTo(email);
-        message.setSubject("[Devs] 이메일 인증 코드");
-        message.setText("이메일 인증 코드는 " + code + "입니다. 5분 안에 입력해 주세요.");
-        return message;
+    private MimeMessagePreparator createMessage(String email, String code) {
+        return mimeMessage -> {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            helper.setFrom(emailSender);
+            helper.setTo(email);
+            helper.setSubject("[Devs] 이메일 인증 코드");
+            helper.setText(
+                    "이메일 인증 코드는 " + code + "입니다. 5분 안에 입력해 주세요.",
+                    TEMPLATE.replace("{{code}}", code)
+            );
+            helper.addInline("devs-logo", LOGO, "image/png");
+        };
+    }
+
+    private static String loadTemplate() {
+        try {
+            return StreamUtils.copyToString(
+                    new ClassPathResource(TEMPLATE_PATH).getInputStream(),
+                    StandardCharsets.UTF_8
+            );
+        } catch (IOException exception) {
+            throw new UncheckedIOException(exception);
+        }
     }
 
     private String generateCode() {
