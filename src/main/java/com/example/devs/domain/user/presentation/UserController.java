@@ -4,6 +4,7 @@ import com.example.devs.domain.user.presentation.dto.request.*;
 import com.example.devs.domain.user.presentation.dto.response.AccessTokenResponse;
 import com.example.devs.domain.user.presentation.dto.response.OAuthLoginResponse;
 import com.example.devs.domain.user.presentation.dto.response.LoginResponse;
+import com.example.devs.domain.user.presentation.dto.response.UserMyQueryResponse;
 import com.example.devs.domain.user.service.*;
 import com.example.devs.global.security.jwt.JwtPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ public class UserController {
     private final UserTechStackUpdateService userTechStackUpdateService;
     private final GoogleOAuthLoginService googleOAuthLoginService;
     private final GitHubOAuthLoginService gitHubOAuthLoginService;
+    private final UserMyQueryService userMyQueryService;
 
     @PostMapping("/email/send")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -75,6 +77,11 @@ public class UserController {
         OAuthLoginResponse response = gitHubOAuthLoginService.execute(oauth2User);
         invalidateSession(servletRequest);
         return response;
+    }
+
+    @GetMapping("/my")
+    public UserMyQueryResponse getMy() {
+        return userMyQueryService.execute();
     }
 
     @PutMapping("/major")
