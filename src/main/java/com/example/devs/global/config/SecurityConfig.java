@@ -48,6 +48,9 @@ public class SecurityConfig {
                         //error
                         .requestMatchers("/error").permitAll()
 
+                        //swagger
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
                         //email
                         .requestMatchers(HttpMethod.POST, "/user/email/send").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/email/verify").permitAll()
