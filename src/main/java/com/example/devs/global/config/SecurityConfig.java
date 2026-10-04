@@ -58,6 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/user/reissue").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/oauth/google/token").hasAuthority("OIDC_USER")
                         .requestMatchers(HttpMethod.POST, "/user/oauth/github/token").hasAuthority("OAUTH2_USER")
+                        .requestMatchers(HttpMethod.GET, "/user/my").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/user/major").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/user/tech-stack").authenticated()
 
