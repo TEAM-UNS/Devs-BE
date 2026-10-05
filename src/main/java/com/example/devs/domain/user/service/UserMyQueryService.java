@@ -4,16 +4,12 @@ import com.example.devs.domain.user.domain.User;
 import com.example.devs.domain.user.domain.repository.UserRepository;
 import com.example.devs.domain.user.exception.UserNotFoundException;
 import com.example.devs.domain.user.facade.UserFacade;
-import com.example.devs.domain.user.presentation.dto.response.UserMajorResponse;
 import com.example.devs.domain.user.presentation.dto.response.UserMyQueryResponse;
-import com.example.devs.domain.user.presentation.dto.response.UserTechStackResponse;
 import com.example.devs.domain.user_major.domain.repository.UserMajorRepository;
 import com.example.devs.domain.user_skill.domain.repository.UserSkillRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,22 +26,10 @@ public class UserMyQueryService {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        List<UserMajorResponse> majors = userMajorRepository.findMajorsByUserId(userId)
-                .stream()
-                .map(UserMajorResponse::from)
-                .toList();
-
-        List<UserTechStackResponse> techStacks = userSkillRepository.findSkillsByUserId(userId)
-                .stream()
-                .map(UserTechStackResponse::from)
-                .toList();
-
-        return new UserMyQueryResponse(
-                user.getName(),
-                user.getEmail(),
-                user.getPersonalHistory(),
-                majors,
-                techStacks
+        return UserMyQueryResponse.from(
+                user,
+                userMajorRepository.findMajorsByUserId(userId),
+                userSkillRepository.findSkillsByUserId(userId)
         );
     }
 }
