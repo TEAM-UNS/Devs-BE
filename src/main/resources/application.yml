@@ -64,3 +64,6 @@ jwt:
 
 oauth:
   frontend-redirect-uri: ${OAUTH_FRONTEND_REDIRECT_URI:http://localhost:5173/oauth/callback}
+
+admin:
+  key: ${ADMIN_KEY:}

@@ -14,6 +14,8 @@ public enum ErrorCode {
     INVALID_GITHUB_OAUTH_PROFILE(HttpStatus.BAD_REQUEST, "GitHub 계정 정보를 확인할 수 없습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
     REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "리포트를 찾을 수 없습니다."),
+    REPORT_WEEK_NOT_FINISHED(HttpStatus.BAD_REQUEST, "아직 끝나지 않은 주의 리포트는 생성할 수 없습니다."),
+    INVALID_ADMIN_KEY(HttpStatus.FORBIDDEN, "관리자 키가 올바르지 않습니다."),
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다."),
     EMAIL_VERIFICATION_REQUEST_LIMIT(
             HttpStatus.TOO_MANY_REQUESTS,
