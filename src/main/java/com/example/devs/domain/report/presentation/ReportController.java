@@ -14,13 +14,20 @@ import com.example.devs.domain.report.service.GetMaxIncreaseTechTrendService;
 import com.example.devs.domain.report.service.PopularTechStackReportService;
 import com.example.devs.domain.report.service.TechMentionQueryService;
 import com.example.devs.domain.report.service.WeeklyCollectedPostingCountService;
+import com.example.devs.domain.report.presentation.dto.response.WeeklyReportsCreateResponse;
+import com.example.devs.domain.report.service.CreateWeeklyReportsService;
+import com.example.devs.global.security.admin.AdminKeyValidator;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -36,6 +43,20 @@ public class ReportController {
     private final WeeklyCollectedPostingCountService weeklyCollectedPostingCountService;
     private final EarliestPostingDateService earliestPostingDateService;
     private final GetLlmQueryService getLlmQueryService;
+    private final CreateWeeklyReportsService createWeeklyReportsService;
+    private final AdminKeyValidator adminKeyValidator;
+
+    @PostMapping("/weekly")
+    @ResponseStatus(HttpStatus.CREATED)
+    public WeeklyReportsCreateResponse createWeeklyReports(
+            @RequestHeader(name = "X-Admin-Key", required = false) String adminKey,
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        adminKeyValidator.validate(adminKey);
+        return createWeeklyReportsService.execute(baseDate);
+    }
 
     @GetMapping("/llm/{reportId}")
     public LlmReportQueryResponse getLlmReport(
