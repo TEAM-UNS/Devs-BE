@@ -85,6 +85,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/report/max-decrease").authenticated()
                         .requestMatchers(HttpMethod.GET, "/report/tech-mentions").authenticated()
                         .requestMatchers(HttpMethod.GET, "/report/weekly-collected-count").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/report/weekly").permitAll()
 
                         //company
                         .requestMatchers(HttpMethod.GET, "/company").authenticated()
