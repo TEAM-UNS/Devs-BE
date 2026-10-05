@@ -30,6 +30,7 @@ public class UserController {
     private final GoogleOAuthLoginService googleOAuthLoginService;
     private final GitHubOAuthLoginService gitHubOAuthLoginService;
     private final UserMyQueryService userMyQueryService;
+    private final UserLogoutService userLogoutService;
 
     @PostMapping("/email/send")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -77,6 +78,12 @@ public class UserController {
         OAuthLoginResponse response = gitHubOAuthLoginService.execute(oauth2User);
         invalidateSession(servletRequest);
         return response;
+    }
+
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout() {
+        userLogoutService.execute();
     }
 
     @GetMapping("/my")
