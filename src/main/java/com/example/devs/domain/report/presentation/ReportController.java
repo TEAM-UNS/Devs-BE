@@ -72,7 +72,7 @@ public class ReportController {
 
     @GetMapping("/popular-tech-stack")
     public PopularTechStackReportResponse getPopularTechStackReport(
-            @RequestParam(name = "major_id") @Positive Integer majorId,
+            @RequestParam(name = "major_id", required = false) @Positive Integer majorId,
             @RequestParam ReportPeriod period,
             @RequestParam(name = "base_date")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
