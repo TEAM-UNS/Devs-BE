@@ -24,6 +24,10 @@ public class RefreshTokenService {
         );
     }
 
+    public void delete(Long userId) {
+        redisTemplate.delete(REFRESH_TOKEN_KEY_PREFIX + userId);
+    }
+
     public boolean matches(Long userId, String refreshToken) {
         String savedRefreshToken = redisTemplate.opsForValue()
                 .get(REFRESH_TOKEN_KEY_PREFIX + userId);
