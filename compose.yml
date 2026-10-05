@@ -25,6 +25,7 @@ services:
       SESSION_COOKIE_SAME_SITE: ${SESSION_COOKIE_SAME_SITE:-none}
       SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE:-true}
       JWT_SECRET: ${JWT_SECRET}
+      ADMIN_KEY: ${ADMIN_KEY:-}
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
     depends_on:
       db:
