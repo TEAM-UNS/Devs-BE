@@ -91,6 +91,10 @@ public class SecurityConfig {
                         //company
                         .requestMatchers(HttpMethod.GET, "/company").authenticated()
 
+                        //chat
+                        .requestMatchers(HttpMethod.GET, "/chat/sessions").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/chat/sessions/{sessionId}/messages").authenticated()
+
                         .anyRequest().denyAll())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
