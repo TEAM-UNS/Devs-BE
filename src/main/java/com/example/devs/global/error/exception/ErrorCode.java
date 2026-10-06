@@ -44,7 +44,8 @@ public enum ErrorCode {
     DECREASING_TECH_TREND_NOT_FOUND(
             HttpStatus.NOT_FOUND,
             "감소한 기술 추이 데이터를 찾을 수 없습니다."
-    );
+    ),
+    CHAT_SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "채팅 세션을 찾을 수 없습니다.");
 
     private final HttpStatus status;
     private final String message;
