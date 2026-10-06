@@ -87,7 +87,7 @@ services:
     restart: unless-stopped
     environment:
       DD_API_KEY: ${DD_API_KEY}
-      DD_SITE: ${DD_SITE:-ap1.datadoghq.com}
+      DD_SITE: ${DD_SITE:-us5.datadoghq.com}
       DD_ENV: prod
       DD_APM_ENABLED: "true"
       DD_APM_NON_LOCAL_TRAFFIC: "true"   # 다른 컨테이너(app)에서 오는 트레이스 수신
