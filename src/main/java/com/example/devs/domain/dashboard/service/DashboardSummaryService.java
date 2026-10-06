@@ -17,8 +17,7 @@ import java.time.ZoneId;
 @RequiredArgsConstructor
 public class DashboardSummaryService {
     private static final ZoneId SEOUL = ZoneId.of("Asia/Seoul");
-    private static final int MENTION_PERIOD_DAYS = 30;
-    private static final int RISING_PERIOD_DAYS = 7;
+    private static final int TECH_PERIOD_DAYS = 7;
     private static final int MINIMUM_PREVIOUS_MENTIONS = 3;
 
     private final DashboardQueryRepository dashboardQueryRepository;
@@ -50,15 +49,15 @@ public class DashboardSummaryService {
         );
 
         MentionedTechResponse mostMentionedTech = dashboardQueryRepository.findMostMentionedTech(
-                        now.minusDays(MENTION_PERIOD_DAYS),
+                        now.minusDays(TECH_PERIOD_DAYS),
                         now
                 )
                 .map(tech -> new MentionedTechResponse(tech.name(), tech.count()))
                 .orElseGet(() -> new MentionedTechResponse(null, 0));
 
         RisingTechResponse mostRisingTech = dashboardQueryRepository.findMostRisingTech(
-                        now.minusDays(RISING_PERIOD_DAYS * 2L),
-                        now.minusDays(RISING_PERIOD_DAYS),
+                        now.minusDays(TECH_PERIOD_DAYS * 2L),
+                        now.minusDays(TECH_PERIOD_DAYS),
                         now,
                         MINIMUM_PREVIOUS_MENTIONS
                 )
