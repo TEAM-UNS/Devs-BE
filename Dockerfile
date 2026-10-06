@@ -17,6 +17,7 @@ RUN groupadd --system spring \
     && useradd --system --gid spring spring
 
 COPY --from=builder /workspace/build/libs/*.jar app.jar
+ADD --chmod=644 https://dtdg.co/latest-java-tracer /app/dd-java-agent.jar
 
 USER spring
 EXPOSE 8080
