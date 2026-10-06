@@ -27,11 +27,25 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       ADMIN_KEY: ${ADMIN_KEY:-}
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      JAVA_TOOL_OPTIONS: -javaagent:/app/dd-java-agent.jar
+      DD_AGENT_HOST: datadog-agent
+      DD_SERVICE: devs-api
+      DD_ENV: prod
+      DD_VERSION: 0.0.1
+      DD_LOGS_INJECTION: "true"
+      LOGGING_STRUCTURED_FORMAT_CONSOLE: logstash
+    labels:
+      com.datadoghq.tags.service: devs-api
+      com.datadoghq.tags.env: prod
+      com.datadoghq.tags.version: 0.0.1
+      com.datadoghq.ad.logs: '[{"source": "java", "service": "devs-api"}]'
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_healthy
+      datadog-agent:
+        condition: service_started
     networks:
       - backend
 
@@ -65,6 +79,26 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    networks:
+      - backend
+
+  datadog-agent:
+    image: gcr.io/datadoghq/agent:7
+    restart: unless-stopped
+    environment:
+      DD_API_KEY: ${DD_API_KEY}
+      DD_SITE: ${DD_SITE:-us5.datadoghq.com}
+      DD_ENV: prod
+      DD_APM_ENABLED: "true"
+      DD_APM_NON_LOCAL_TRAFFIC: "true"   # 다른 컨테이너(app)에서 오는 트레이스 수신
+      DD_LOGS_ENABLED: "true"
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: "false"  # 라벨 붙은 컨테이너만 로그 수집
+      DD_DOGSTATSD_NON_LOCAL_TRAFFIC: "true"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
     networks:
       - backend
 
