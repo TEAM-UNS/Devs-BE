@@ -25,7 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BestTechStackQueryService {
     private static final ZoneId SEOUL = ZoneId.of("Asia/Seoul");
-    private static final int BEST_TECH_STACK_LIMIT = 2;
+    private static final int BEST_TECH_STACK_LIMIT = 4;
 
     private final DashboardQueryRepository dashboardQueryRepository;
     private final TechFieldRepository techFieldRepository;
