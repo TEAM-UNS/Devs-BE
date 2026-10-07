@@ -36,6 +36,9 @@ out/
 ### VS Code ###
 .vscode/
 
+### oh-my-claudecode ###
+.omc/
+
 ### Local secrets ###
 .env
 *.dump
