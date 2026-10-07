@@ -38,6 +38,11 @@ spring:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
 
+  mvc:
+    async:
+      # LLM 응답 스트리밍이 기본 타임아웃(30초)에 끊기지 않도록 늘린다.
+      request-timeout: 3m
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -67,3 +72,6 @@ oauth:
 
 admin:
   key: ${ADMIN_KEY:}
+
+ai:
+  base-url: ${AI_BASE_URL:http://localhost:8000}

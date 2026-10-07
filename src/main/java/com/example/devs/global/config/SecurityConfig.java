@@ -4,6 +4,7 @@ import com.example.devs.global.security.jwt.JwtAuthenticationFilter;
 import com.example.devs.global.security.jwt.JwtProperties;
 import com.example.devs.global.security.oauth.GitHubOAuth2UserService;
 import com.example.devs.global.security.oauth.OAuthProperties;
+import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -42,6 +43,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        //async (SSE 스트리밍 완료 시 재디스패치는 JWT 필터를 거치지 않는다)
+                        .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
+
                         //preflight
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
@@ -94,6 +98,7 @@ public class SecurityConfig {
                         //chat
                         .requestMatchers(HttpMethod.GET, "/chat/sessions").authenticated()
                         .requestMatchers(HttpMethod.GET, "/chat/sessions/{sessionId}/messages").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/chat/messages").authenticated()
 
                         .anyRequest().denyAll())
                 .oauth2Login(oauth2 -> oauth2
