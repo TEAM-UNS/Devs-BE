@@ -39,6 +39,9 @@ out/
 ### oh-my-claudecode ###
 .omc/
 
+### Local docs ###
+docs/
+
 ### Local secrets ###
 .env
 *.dump
