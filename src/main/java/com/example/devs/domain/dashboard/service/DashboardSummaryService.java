@@ -34,11 +34,11 @@ public class DashboardSummaryService {
         OffsetDateTime tomorrowStart = today.plusDays(1).atStartOfDay(SEOUL).toOffsetDateTime();
         OffsetDateTime yesterdayStart = today.minusDays(1).atStartOfDay(SEOUL).toOffsetDateTime();
 
-        long todayCollectedCount = dashboardQueryRepository.countCollectedBetween(
+        long todayCollectedCount = dashboardQueryRepository.countPostedBetween(
                 todayStart,
                 tomorrowStart
         );
-        long yesterdayCollectedCount = dashboardQueryRepository.countCollectedBetween(
+        long yesterdayCollectedCount = dashboardQueryRepository.countPostedBetween(
                 yesterdayStart,
                 todayStart
         );

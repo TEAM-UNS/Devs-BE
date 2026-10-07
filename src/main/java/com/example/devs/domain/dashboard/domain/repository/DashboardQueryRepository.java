@@ -15,12 +15,12 @@ import java.util.Optional;
 public class DashboardQueryRepository {
     private final JdbcClient jdbcClient;
 
-    public long countCollectedBetween(OffsetDateTime start, OffsetDateTime end) {
+    public long countPostedBetween(OffsetDateTime start, OffsetDateTime end) {
         return jdbcClient.sql("""
                         select count(*)
                         from market.job_posting
-                        where collected_at >= :start
-                          and collected_at < :end
+                        where posted_at >= :start
+                          and posted_at < :end
                         """)
                 .param("start", start)
                 .param("end", end)
@@ -33,7 +33,7 @@ public class DashboardQueryRepository {
                         select count(distinct company_id)
                         from market.job_posting
                         where company_id is not null
-                          and collected_at <= :asOf
+                          and posted_at <= :asOf
                           and (expires_at is null or expires_at >= :asOf)
                         """)
                 .param("asOf", asOf)
@@ -53,8 +53,8 @@ public class DashboardQueryRepository {
                           on skill.id = posting_skill.skill_id
                         join market.job_posting posting
                           on posting.id = posting_skill.posting_id
-                        where posting.collected_at >= :start
-                          and posting.collected_at < :end
+                        where posting.posted_at >= :start
+                          and posting.posted_at < :end
                         group by skill.id, skill.name
                         order by mention_count desc, skill.name asc
                         limit 1
@@ -79,20 +79,20 @@ public class DashboardQueryRepository {
                             select skill.id,
                                    skill.name,
                                    count(*) filter (
-                                       where posting.collected_at >= :currentStart
-                                         and posting.collected_at < :currentEnd
+                                       where posting.posted_at >= :currentStart
+                                         and posting.posted_at < :currentEnd
                                    ) as current_count,
                                    count(*) filter (
-                                       where posting.collected_at >= :previousStart
-                                         and posting.collected_at < :currentStart
+                                       where posting.posted_at >= :previousStart
+                                         and posting.posted_at < :currentStart
                                    ) as previous_count
                             from market.posting_skill posting_skill
                             join market.skill skill
                               on skill.id = posting_skill.skill_id
                             join market.job_posting posting
                               on posting.id = posting_skill.posting_id
-                            where posting.collected_at >= :previousStart
-                              and posting.collected_at < :currentEnd
+                            where posting.posted_at >= :previousStart
+                              and posting.posted_at < :currentEnd
                             group by skill.id, skill.name
                         )
                         select name,

@@ -17,7 +17,7 @@ public class WeeklyCollectedPostingCountService {
     @Transactional(readOnly = true)
     public WeeklyCollectedPostingCountResponse execute(LocalDate baseDate) {
         ReportWeek week = ReportWeek.from(baseDate);
-        long count = reportQueryRepository.countCollectedPostings(
+        long count = reportQueryRepository.countPostedPostings(
                 week.currentStart(), week.currentEnd()
         );
         return new WeeklyCollectedPostingCountResponse(count);
