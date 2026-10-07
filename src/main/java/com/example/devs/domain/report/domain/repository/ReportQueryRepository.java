@@ -24,15 +24,15 @@ public class ReportQueryRepository {
                 .fetchOne();
     }
 
-    public long countCollectedPostings(
+    public long countPostedPostings(
             OffsetDateTime start,
             OffsetDateTime end
     ) {
         return jdbcClient.sql("""
                         select count(*)
                         from market.job_posting
-                        where collected_at >= :start
-                          and collected_at < :end
+                        where posted_at >= :start
+                          and posted_at < :end
                         """)
                 .param("start", start)
                 .param("end", end)
