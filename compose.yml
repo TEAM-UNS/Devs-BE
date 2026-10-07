@@ -27,6 +27,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       ADMIN_KEY: ${ADMIN_KEY:-}
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      AI_BASE_URL: http://ai-api:8000
       JAVA_TOOL_OPTIONS: -javaagent:/app/dd-java-agent.jar
       DD_AGENT_HOST: datadog-agent
       DD_SERVICE: devs-api
