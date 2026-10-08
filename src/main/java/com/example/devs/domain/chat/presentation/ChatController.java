@@ -7,10 +7,9 @@ import com.example.devs.domain.chat.service.ChatMessageListQueryService;
 import com.example.devs.domain.chat.service.ChatSendService;
 import com.example.devs.domain.chat.service.ChatSessionListQueryService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
@@ -31,9 +31,10 @@ public class ChatController {
 
     @GetMapping("/sessions")
     public ChatSessionListResponse getSessions(
-            @PageableDefault(size = 20, sort = "lastMessageAt", direction = Sort.Direction.DESC) Pageable pageable
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size
     ) {
-        return chatSessionListQueryService.execute(pageable);
+        return chatSessionListQueryService.execute(page, size);
     }
 
     @GetMapping("/sessions/{sessionId}/messages")

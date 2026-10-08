@@ -9,15 +9,13 @@ import java.time.OffsetDateTime;
 public record ChatSessionResponse(
         Integer id,
         String title,
-        OffsetDateTime lastMessageAt,
-        OffsetDateTime createdAt
+        OffsetDateTime lastMessageAt
 ) {
     public static ChatSessionResponse from(ChatSession session) {
         return ChatSessionResponse.builder()
                 .id(session.getId())
                 .title(session.getTitle())
                 .lastMessageAt(session.getLastMessageAt())
-                .createdAt(session.getCreatedAt())
                 .build();
     }
 }
