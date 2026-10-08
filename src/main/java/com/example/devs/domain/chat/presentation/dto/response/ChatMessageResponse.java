@@ -12,7 +12,6 @@ public record ChatMessageResponse(
         Long id,
         String role,
         String content,
-        List<ChatToolCallResponse> toolCalls,
         OffsetDateTime createdAt
 ) {
     public static ChatMessageResponse from(ChatMessage message, List<ChatToolCall> toolCalls) {
@@ -20,7 +19,6 @@ public record ChatMessageResponse(
                 .id(message.getId())
                 .role(message.getRole())
                 .content(message.getContent())
-                .toolCalls(toolCalls.stream().map(ChatToolCallResponse::from).toList())
                 .createdAt(message.getCreatedAt())
                 .build();
     }
