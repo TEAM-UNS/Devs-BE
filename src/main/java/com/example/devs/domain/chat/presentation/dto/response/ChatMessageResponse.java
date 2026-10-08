@@ -11,15 +11,13 @@ import java.util.List;
 public record ChatMessageResponse(
         Long id,
         String role,
-        String content,
-        OffsetDateTime createdAt
+        String content
 ) {
-    public static ChatMessageResponse from(ChatMessage message, List<ChatToolCall> toolCalls) {
+    public static ChatMessageResponse from(ChatMessage message) {
         return ChatMessageResponse.builder()
                 .id(message.getId())
                 .role(message.getRole())
                 .content(message.getContent())
-                .createdAt(message.getCreatedAt())
                 .build();
     }
 }
