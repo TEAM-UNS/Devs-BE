@@ -39,10 +39,7 @@ public class ChatMessageListQueryService {
 
         List<ChatMessageResponse> messages = chatMessageRepository.findBySessionIdOrderByCreatedAtAscIdAsc(sessionId)
                 .stream()
-                .map(message -> ChatMessageResponse.from(
-                        message,
-                        toolCallsByMessageId.getOrDefault(message.getId(), List.of())
-                ))
+                .map(ChatMessageResponse::from)
                 .toList();
 
         return ChatMessageListResponse.from(session, messages);
