@@ -19,8 +19,8 @@ public class DashboardQueryRepository {
         return jdbcClient.sql("""
                         select count(*)
                         from market.job_posting
-                        where posted_at >= :start
-                          and posted_at < :end
+                        where created_at >= :start
+                          and created_at < :end
                         """)
                 .param("start", start)
                 .param("end", end)
