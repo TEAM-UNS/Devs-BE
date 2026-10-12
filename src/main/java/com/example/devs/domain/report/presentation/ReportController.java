@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,11 +58,14 @@ public class ReportController {
         return createWeeklyReportsService.execute(baseDate, force);
     }
 
-    @GetMapping("/llm/{reportId}")
+    @GetMapping("/llm")
     public LlmReportQueryResponse getLlmReport(
-            @PathVariable("reportId") @Positive Long reportId
+            @RequestParam(name = "major_id", required = false) @Positive Integer majorId,
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
     ) {
-        return getLlmQueryService.getLlmReportQueryResponse(reportId);
+        return getLlmQueryService.execute(majorId, baseDate);
     }
 
     @GetMapping("/earliest-posting-date")
