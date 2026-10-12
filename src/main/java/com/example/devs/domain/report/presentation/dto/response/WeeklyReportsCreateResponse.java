@@ -6,6 +6,7 @@ public record WeeklyReportsCreateResponse(
         LocalDate weekStartDate,
         int createdCount,
         int skippedCount,
-        int failedCount
+        int failedCount,
+        boolean generationRequested
 ) {
 }

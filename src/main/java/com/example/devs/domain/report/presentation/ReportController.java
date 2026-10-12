@@ -52,10 +52,11 @@ public class ReportController {
             @RequestHeader(name = "X-Admin-Key", required = false) String adminKey,
             @RequestParam(name = "base_date")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-            LocalDate baseDate
+            LocalDate baseDate,
+            @RequestParam(defaultValue = "false") boolean force
     ) {
         adminKeyValidator.validate(adminKey);
-        return createWeeklyReportsService.execute(baseDate);
+        return createWeeklyReportsService.execute(baseDate, force);
     }
 
     @GetMapping("/llm/{reportId}")
@@ -117,6 +118,6 @@ public class ReportController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate baseDate
     ) {
-        return weeklyCollectedPostingCountService.execute(baseDate);
+        return weeklyCollectedPostingCountService.execute(null, baseDate);
     }
 }
