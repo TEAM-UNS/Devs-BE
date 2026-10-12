@@ -16,17 +16,21 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
-/** 한 주의 리포트를 전체(major 없음) 및 전공별로 적재한다. 이미 있는 리포트는 건너뛴다. */
+/**
+ * 한 주의 리포트를 전체(major 없음) 및 전공별로 적재한 뒤 AI 서버에 LLM 요약 생성을 요청한다.
+ * 이미 있는 리포트는 건너뛴다. force가 true면 AI 서버가 이미 만든 요약도 다시 만든다.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CreateWeeklyReportsService {
     private final CreateWeeklyReportService createWeeklyReportService;
+    private final RequestLlmReportGenerationService requestLlmReportGenerationService;
     private final ReportRepository reportRepository;
     private final TechFieldRepository techFieldRepository;
     private final Clock clock;
 
-    public WeeklyReportsCreateResponse execute(LocalDate baseDate) {
+    public WeeklyReportsCreateResponse execute(LocalDate baseDate, boolean force) {
         LocalDate weekStart = baseDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         if (weekStart.plusWeeks(1).isAfter(LocalDate.now(clock))) {
             throw new ReportWeekNotFinishedException();
@@ -52,6 +56,7 @@ public class CreateWeeklyReportsService {
                 log.error("주간 리포트 생성 실패 majorId={}, weekStartDate={}", majorId, weekStart, e);
             }
         }
-        return new WeeklyReportsCreateResponse(weekStart, created, skipped, failed);
+        boolean generationRequested = requestLlmReportGenerationService.execute(weekStart, force);
+        return new WeeklyReportsCreateResponse(weekStart, created, skipped, failed, generationRequested);
     }
 }
