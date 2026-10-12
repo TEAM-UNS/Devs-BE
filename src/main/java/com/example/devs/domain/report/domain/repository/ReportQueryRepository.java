@@ -25,15 +25,20 @@ public class ReportQueryRepository {
     }
 
     public long countPostedPostings(
+            Integer majorId,
             OffsetDateTime start,
             OffsetDateTime end
     ) {
-        return jdbcClient.sql("""
-                        select count(*)
-                        from market.job_posting
-                        where posted_at >= :start
-                          and posted_at < :end
-                        """)
+        String sql = """
+                select count(*)
+                from market.job_posting
+                where posted_at >= :start
+                  and posted_at < :end
+                """;
+        JdbcClient.StatementSpec statement = majorId == null
+                ? jdbcClient.sql(sql)
+                : jdbcClient.sql(sql + "  and field_id = :majorId\n").param("majorId", majorId);
+        return statement
                 .param("start", start)
                 .param("end", end)
                 .query(Long.class)
