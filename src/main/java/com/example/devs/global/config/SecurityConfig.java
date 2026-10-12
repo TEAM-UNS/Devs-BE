@@ -83,7 +83,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/dashboard/best-tech-stacks").authenticated()
 
                         //report
-                        .requestMatchers(HttpMethod.GET, "/report/llm/{reportId}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/report/llm").authenticated()
                         .requestMatchers(HttpMethod.GET, "/report/earliest-posting-date").authenticated()
                         .requestMatchers(HttpMethod.GET, "/report/popular-tech-stack").authenticated()
                         .requestMatchers(HttpMethod.GET, "/report/max-increase").authenticated()
