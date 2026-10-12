@@ -27,7 +27,7 @@ public class GetMaxDecreaseTechTrendService {
 
         TechTrend trend = weeklyTechTrendCalculator.calculate(majorId, baseDate)
                 .stream()
-                .filter(it -> it.changeRate() < 0)
+                .filter(TechTrend::isDecrease)
                 .min(Comparator.comparingDouble(TechTrend::changeRate))
                 .orElseThrow(DecreasingTechTrendNotFoundException::new);
 
