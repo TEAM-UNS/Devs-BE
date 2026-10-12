@@ -41,9 +41,9 @@ public class CreateWeeklyReportService {
                         item.name(), item.previous(), item.current()
                 )).toList();
         var trends = weeklyTechTrendCalculator.calculate(majorId, baseDate);
-        var increase = trends.stream().filter(trend -> trend.changeRate() > 0)
+        var increase = trends.stream().filter(TechTrend::isIncrease)
                 .max(Comparator.comparingDouble(TechTrend::changeRate)).orElse(null);
-        var decrease = trends.stream().filter(trend -> trend.changeRate() < 0)
+        var decrease = trends.stream().filter(TechTrend::isDecrease)
                 .min(Comparator.comparingDouble(TechTrend::changeRate)).orElse(null);
         var statistics = new WeeklyReportStatistics(
                 weeklyCollectedPostingCountService.execute(majorId, baseDate).count(),
