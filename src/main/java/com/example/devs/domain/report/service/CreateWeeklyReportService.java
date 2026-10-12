@@ -46,7 +46,7 @@ public class CreateWeeklyReportService {
         var decrease = trends.stream().filter(trend -> trend.changeRate() < 0)
                 .min(Comparator.comparingDouble(TechTrend::changeRate)).orElse(null);
         var statistics = new WeeklyReportStatistics(
-                weeklyCollectedPostingCountService.execute(baseDate).count(),
+                weeklyCollectedPostingCountService.execute(majorId, baseDate).count(),
                 earliestPostingDateService.execute().earliestPostingDate(),
                 popular, mentions, increase, decrease
         );

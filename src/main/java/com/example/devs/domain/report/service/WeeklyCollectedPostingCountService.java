@@ -15,10 +15,11 @@ public class WeeklyCollectedPostingCountService {
     private final ReportQueryRepository reportQueryRepository;
 
     @Transactional(readOnly = true)
-    public WeeklyCollectedPostingCountResponse execute(LocalDate baseDate) {
+    /** majorId가 null이면 전체 공고 수를 센다. */
+    public WeeklyCollectedPostingCountResponse execute(Integer majorId, LocalDate baseDate) {
         ReportWeek week = ReportWeek.from(baseDate);
         long count = reportQueryRepository.countPostedPostings(
-                week.currentStart(), week.currentEnd()
+                majorId, week.currentStart(), week.currentEnd()
         );
         return new WeeklyCollectedPostingCountResponse(count);
     }

@@ -117,6 +117,6 @@ public class ReportController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate baseDate
     ) {
-        return weeklyCollectedPostingCountService.execute(baseDate);
+        return weeklyCollectedPostingCountService.execute(null, baseDate);
     }
 }
