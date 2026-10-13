@@ -42,6 +42,6 @@ public class ChatMessageListQueryService {
                 .map(ChatMessageResponse::from)
                 .toList();
 
-        return ChatMessageListResponse.from(session, messages);
+        return ChatMessageListResponse.of(session, messages);
     }
 }

@@ -55,7 +55,7 @@ public class GitHubOAuthLoginService {
         boolean onboardingRequired = majors.isEmpty()
                 || !userSkillRepository.existsByUserId(user.getId());
 
-        return new OAuthLoginResponse(
+        return OAuthLoginResponse.of(
                 accessToken,
                 refreshToken,
                 onboardingRequired,

@@ -81,7 +81,7 @@ public class BestTechStackQueryService {
                 .map(candidate -> toResponse(candidate.series(), bucketDates))
                 .toList();
 
-        return new BestTechStackListResponse(period, majorId, techStacks);
+        return BestTechStackListResponse.of(period, majorId, techStacks);
     }
 
     private TrendCandidate toCandidate(TrendSeries series, List<LocalDate> bucketDates) {
@@ -96,13 +96,13 @@ public class BestTechStackQueryService {
             List<LocalDate> bucketDates
     ) {
         List<TechStackTrendValueResponse> values = bucketDates.stream()
-                .map(date -> new TechStackTrendValueResponse(
+                .map(date -> TechStackTrendValueResponse.of(
                         date,
                         series.values().getOrDefault(date, 0L)
                 ))
                 .toList();
 
-        return new BestTechStackResponse(series.id(), series.name(), values);
+        return BestTechStackResponse.of(series.id(), series.name(), values);
     }
 
     private record TrendSeries(

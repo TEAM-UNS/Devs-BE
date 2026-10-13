@@ -7,4 +7,15 @@ public record BestTechStackResponse(
         String name,
         List<TechStackTrendValueResponse> values
 ) {
+    public static BestTechStackResponse of(
+            Integer techStackId,
+            String name,
+            List<TechStackTrendValueResponse> values
+    ) {
+        return new BestTechStackResponse(
+                techStackId,
+                name,
+                values
+        );
+    }
 }

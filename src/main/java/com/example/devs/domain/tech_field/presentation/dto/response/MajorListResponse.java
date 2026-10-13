@@ -5,4 +5,7 @@ import java.util.List;
 public record MajorListResponse(
         List<MajorResponse> categories
 ) {
+    public static MajorListResponse from(List<MajorResponse> categories) {
+        return new MajorListResponse(categories);
+    }
 }

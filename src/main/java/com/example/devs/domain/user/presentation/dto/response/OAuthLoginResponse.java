@@ -8,4 +8,17 @@ public record OAuthLoginResponse(
         boolean onboardingRequired,
         List<UserMajorResponse> majors
 ) {
+    public static OAuthLoginResponse of(
+            String accessToken,
+            String refreshToken,
+            boolean onboardingRequired,
+            List<UserMajorResponse> majors
+    ) {
+        return new OAuthLoginResponse(
+                accessToken,
+                refreshToken,
+                onboardingRequired,
+                majors
+        );
+    }
 }

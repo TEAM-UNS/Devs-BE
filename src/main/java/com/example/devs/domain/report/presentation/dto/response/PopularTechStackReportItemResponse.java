@@ -12,4 +12,25 @@ public record PopularTechStackReportItemResponse(
         Double changeRate,
         Trend trend
 ) {
+    public static PopularTechStackReportItemResponse of(
+            int rank,
+            Integer techStackId,
+            String name,
+            long searchCount,
+            long previousSearchCount,
+            long changeCount,
+            Double changeRate,
+            Trend trend
+    ) {
+        return new PopularTechStackReportItemResponse(
+                rank,
+                techStackId,
+                name,
+                searchCount,
+                previousSearchCount,
+                changeCount,
+                changeRate,
+                trend
+        );
+    }
 }

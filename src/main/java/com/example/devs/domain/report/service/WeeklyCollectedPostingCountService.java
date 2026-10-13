@@ -14,13 +14,13 @@ import java.time.LocalDate;
 public class WeeklyCollectedPostingCountService {
     private final ReportQueryRepository reportQueryRepository;
 
-    @Transactional(readOnly = true)
     /** majorId가 null이면 전체 공고 수를 센다. */
+    @Transactional(readOnly = true)
     public WeeklyCollectedPostingCountResponse execute(Integer majorId, LocalDate baseDate) {
         ReportWeek week = ReportWeek.from(baseDate);
         long count = reportQueryRepository.countPostedPostings(
                 majorId, week.currentStart(), week.currentEnd()
         );
-        return new WeeklyCollectedPostingCountResponse(count);
+        return WeeklyCollectedPostingCountResponse.from(count);
     }
 }
