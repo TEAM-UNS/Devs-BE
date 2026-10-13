@@ -46,7 +46,7 @@ public class UserLoginService {
                 refreshToken
         );
 
-        return new LoginResponse(
+        return LoginResponse.of(
                 accessToken,
                 refreshToken,
                 majors

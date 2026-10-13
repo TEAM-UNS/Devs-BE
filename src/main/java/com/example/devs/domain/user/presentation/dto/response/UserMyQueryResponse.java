@@ -14,7 +14,7 @@ public record UserMyQueryResponse(
         List<UserMajorResponse> majors,
         List<UserTechStackResponse> techStacks
 ) {
-    public static UserMyQueryResponse from(User user, List<TechField> majors, List<Skill> techStacks) {
+    public static UserMyQueryResponse of(User user, List<TechField> majors, List<Skill> techStacks) {
         return new UserMyQueryResponse(
                 user.getName(),
                 user.getEmail(),
