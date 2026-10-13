@@ -9,4 +9,15 @@ public record BestTechStackListResponse(
         Integer majorId,
         List<BestTechStackResponse> techStacks
 ) {
+    public static BestTechStackListResponse of(
+            TechTrendPeriod period,
+            Integer majorId,
+            List<BestTechStackResponse> techStacks
+    ) {
+        return new BestTechStackListResponse(
+                period,
+                majorId,
+                techStacks
+        );
+    }
 }

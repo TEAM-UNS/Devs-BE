@@ -6,4 +6,17 @@ public record PopularTechStackResponse(
         String name,
         long count
 ) {
+    public static PopularTechStackResponse of(
+            int rank,
+            Integer techStackId,
+            String name,
+            long count
+    ) {
+        return new PopularTechStackResponse(
+                rank,
+                techStackId,
+                name,
+                count
+        );
+    }
 }
