@@ -4,4 +4,7 @@ public record MentionedTechResponse(
         String name,
         long count
 ) {
+    public static MentionedTechResponse of(String name, long count) {
+        return new MentionedTechResponse(name, count);
+    }
 }
