@@ -9,7 +9,7 @@ public record ChatMessageListResponse(
         String title,
         List<ChatMessageResponse> messages
 ) {
-    public static ChatMessageListResponse from(ChatSession session, List<ChatMessageResponse> messages) {
+    public static ChatMessageListResponse of(ChatSession session, List<ChatMessageResponse> messages) {
         return new ChatMessageListResponse(session.getId(), session.getTitle(), messages);
     }
 }

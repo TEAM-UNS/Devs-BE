@@ -45,7 +45,7 @@ public class CompanySizeTechStackQueryService {
                 );
 
         List<CompanySizeTechStackResponse> responses = IntStream.range(0, techStacks.size())
-                .mapToObj(index -> new CompanySizeTechStackResponse(
+                .mapToObj(index -> CompanySizeTechStackResponse.of(
                         index + 1,
                         techStacks.get(index).name(),
                         techStacks.get(index).percentage()
@@ -56,7 +56,7 @@ public class CompanySizeTechStackQueryService {
                 ? null
                 : major.getCode().toUpperCase(Locale.ROOT);
 
-        return new CompanySizeTechStackListResponse(
+        return CompanySizeTechStackListResponse.of(
                 companySize.name(),
                 category,
                 responses

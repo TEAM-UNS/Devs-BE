@@ -31,10 +31,6 @@ public class GetMaxIncreaseTechTrendService {
                 .max(Comparator.comparingDouble(TechTrend::changeRate))
                 .orElseThrow(IncreasingTechTrendNotFoundException::new);
 
-        return new TechTrendResponse(
-                trend.skillId(),
-                trend.skillName(),
-                Math.round(trend.changeRate() * 10) / 10.0
-        );
+        return TechTrendResponse.from(trend);
     }
 }

@@ -44,14 +44,14 @@ public class PopularTechStackQueryService {
                 ? null
                 : major.getCode().toUpperCase(Locale.ROOT);
 
-        return new PopularTechStackListResponse(majorCode, responses);
+        return PopularTechStackListResponse.of(majorCode, responses);
     }
 
     private PopularTechStackResponse toResponse(
             int rank,
             DashboardQueryRepository.PopularTechStack techStack
     ) {
-        return new PopularTechStackResponse(
+        return PopularTechStackResponse.of(
                 rank,
                 techStack.id(),
                 techStack.name(),

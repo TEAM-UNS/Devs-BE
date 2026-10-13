@@ -52,8 +52,8 @@ public class DashboardSummaryService {
                         now.minusDays(TECH_PERIOD_DAYS),
                         now
                 )
-                .map(tech -> new MentionedTechResponse(tech.name(), tech.count()))
-                .orElseGet(() -> new MentionedTechResponse(null, 0));
+                .map(tech -> MentionedTechResponse.of(tech.name(), tech.count()))
+                .orElseGet(() -> MentionedTechResponse.of(null, 0));
 
         RisingTechResponse mostRisingTech = dashboardQueryRepository.findMostRisingTech(
                         now.minusDays(TECH_PERIOD_DAYS * 2L),
@@ -61,10 +61,10 @@ public class DashboardSummaryService {
                         now,
                         MINIMUM_PREVIOUS_MENTIONS
                 )
-                .map(tech -> new RisingTechResponse(tech.name(), tech.rate()))
-                .orElseGet(() -> new RisingTechResponse(null, 0));
+                .map(tech -> RisingTechResponse.of(tech.name(), tech.rate()))
+                .orElseGet(() -> RisingTechResponse.of(null, 0));
 
-        return new DashboardSummaryResponse(
+        return DashboardSummaryResponse.of(
                 todayCollectedCount,
                 todayCollectedCount - yesterdayCollectedCount,
                 activeCompanyCount,

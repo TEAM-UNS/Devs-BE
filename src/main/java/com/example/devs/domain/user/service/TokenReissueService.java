@@ -27,7 +27,7 @@ public class TokenReissueService {
         User user = userRepository.findById(userId)
                 .orElseThrow(InvalidRefreshTokenException::new);
 
-        return new AccessTokenResponse(jwtProvider.generateAccessToken(user));
+        return AccessTokenResponse.from(jwtProvider.generateAccessToken(user));
     }
 
     private Long parseUserId(String refreshToken) {

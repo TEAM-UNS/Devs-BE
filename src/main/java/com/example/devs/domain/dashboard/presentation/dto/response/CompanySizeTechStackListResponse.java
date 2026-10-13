@@ -7,4 +7,15 @@ public record CompanySizeTechStackListResponse(
         String category,
         List<CompanySizeTechStackResponse> techStacks
 ) {
+    public static CompanySizeTechStackListResponse of(
+            String companySize,
+            String category,
+            List<CompanySizeTechStackResponse> techStacks
+    ) {
+        return new CompanySizeTechStackListResponse(
+                companySize,
+                category,
+                techStacks
+        );
+    }
 }
