@@ -1,21 +1,8 @@
 package com.example.devs.domain.report.presentation;
 
 import com.example.devs.domain.report.domain.ReportPeriod;
-import com.example.devs.domain.report.presentation.dto.response.LlmReportQueryResponse;
-import com.example.devs.domain.report.service.GetLlmQueryService;
-import com.example.devs.domain.report.presentation.dto.response.EarliestPostingDateResponse;
-import com.example.devs.domain.report.service.EarliestPostingDateService;
-import com.example.devs.domain.report.presentation.dto.response.PopularTechStackReportResponse;
-import com.example.devs.domain.report.presentation.dto.response.TechMentionListResponse;
-import com.example.devs.domain.report.presentation.dto.response.TechTrendResponse;
-import com.example.devs.domain.report.presentation.dto.response.WeeklyCollectedPostingCountResponse;
-import com.example.devs.domain.report.service.GetMaxDecreaseTechTrendService;
-import com.example.devs.domain.report.service.GetMaxIncreaseTechTrendService;
-import com.example.devs.domain.report.service.PopularTechStackReportService;
-import com.example.devs.domain.report.service.TechMentionQueryService;
-import com.example.devs.domain.report.service.WeeklyCollectedPostingCountService;
-import com.example.devs.domain.report.presentation.dto.response.WeeklyReportsCreateResponse;
-import com.example.devs.domain.report.service.CreateWeeklyReportsService;
+import com.example.devs.domain.report.presentation.dto.response.*;
+import com.example.devs.domain.report.service.*;
 import com.example.devs.global.security.admin.AdminKeyValidator;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +31,7 @@ public class ReportController {
     private final GetLlmQueryService getLlmQueryService;
     private final CreateWeeklyReportsService createWeeklyReportsService;
     private final AdminKeyValidator adminKeyValidator;
+    private final ReportWeekRangeService reportWeekRangeService;
 
     @PostMapping("/weekly")
     @ResponseStatus(HttpStatus.CREATED)
@@ -121,5 +109,14 @@ public class ReportController {
             LocalDate baseDate
     ) {
         return weeklyCollectedPostingCountService.execute(null, baseDate);
+    }
+
+    @GetMapping("/week-range")
+    public ReportWeekRangeResponse getWeekRange(
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        return reportWeekRangeService.execute(baseDate);
     }
 }
