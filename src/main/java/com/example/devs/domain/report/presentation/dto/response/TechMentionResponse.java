@@ -5,4 +5,7 @@ public record TechMentionResponse(
         long previous,
         long current
 ) {
+    public static TechMentionResponse of(String name, long previous, long current) {
+        return new TechMentionResponse(name, previous, current);
+    }
 }
