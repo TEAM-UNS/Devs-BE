@@ -37,6 +37,11 @@ public enum ErrorCode {
             HttpStatus.BAD_REQUEST,
             "선택한 전공에 속하지 않는 기술이 포함되어 있습니다."
     ),
+    COMPANY_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 기업이 포함되어 있습니다."),
+    INVALID_COMPARE_COMPANY_COUNT(
+            HttpStatus.BAD_REQUEST,
+            "비교할 기업은 2개 이상 5개 이하로 선택해야 합니다."
+    ),
     INCREASING_TECH_TREND_NOT_FOUND(
             HttpStatus.NOT_FOUND,
             "증가한 기술 추이 데이터를 찾을 수 없습니다."
