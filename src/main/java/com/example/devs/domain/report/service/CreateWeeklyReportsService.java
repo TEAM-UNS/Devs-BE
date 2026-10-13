@@ -57,6 +57,6 @@ public class CreateWeeklyReportsService {
             }
         }
         boolean generationRequested = requestLlmReportGenerationService.execute(weekStart, force);
-        return new WeeklyReportsCreateResponse(weekStart, created, skipped, failed, generationRequested);
+        return WeeklyReportsCreateResponse.of(weekStart, created, skipped, failed, generationRequested);
     }
 }

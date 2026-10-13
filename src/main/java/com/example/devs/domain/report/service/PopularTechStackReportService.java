@@ -54,7 +54,7 @@ public class PopularTechStackReportService {
         List<PopularTechStackReportItemResponse> items = IntStream.range(0, counts.size())
                 .mapToObj(index -> toResponse(index + 1, counts.get(index))).toList();
 
-        return new PopularTechStackReportResponse(
+        return PopularTechStackReportResponse.of(
                 majorId,
                 period,
                 baseDate,
@@ -97,7 +97,7 @@ public class PopularTechStackReportService {
                 count.previousCount()
         );
 
-        return new PopularTechStackReportItemResponse(
+        return PopularTechStackReportItemResponse.of(
                 rank,
                 count.techStackId(),
                 count.name(),

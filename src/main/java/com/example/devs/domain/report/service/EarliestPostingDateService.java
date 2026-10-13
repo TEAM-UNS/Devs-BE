@@ -17,7 +17,7 @@ public class EarliestPostingDateService {
     @Transactional(readOnly = true)
     public EarliestPostingDateResponse execute() {
         var earliest = reportQueryRepository.findEarliestPostedAt();
-        return new EarliestPostingDateResponse(
+        return EarliestPostingDateResponse.from(
                 earliest == null ? null : earliest.atZoneSameInstant(SEOUL).toLocalDate()
         );
     }

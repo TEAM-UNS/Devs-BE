@@ -45,13 +45,13 @@ public class TechMentionQueryService {
                 );
 
         List<TechMentionResponse> mentions = counts.stream()
-                .map(count -> new TechMentionResponse(
+                .map(count -> TechMentionResponse.of(
                         count.name(),
                         count.previousCount(),
                         count.currentCount()
                 ))
                 .toList();
 
-        return new TechMentionListResponse(mentions);
+        return TechMentionListResponse.from(mentions);
     }
 }

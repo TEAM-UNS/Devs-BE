@@ -11,4 +11,17 @@ public record PopularTechStackReportResponse(
         LocalDate baseDate,
         List<PopularTechStackReportItemResponse> items
 ) {
+    public static PopularTechStackReportResponse of(
+            Integer majorId,
+            ReportPeriod period,
+            LocalDate baseDate,
+            List<PopularTechStackReportItemResponse> items
+    ) {
+        return new PopularTechStackReportResponse(
+                majorId,
+                period,
+                baseDate,
+                items
+        );
+    }
 }
