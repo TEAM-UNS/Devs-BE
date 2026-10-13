@@ -1,6 +1,5 @@
 package com.example.devs.domain.tech_field.service;
 
-import com.example.devs.domain.skill.domain.SkillField;
 import com.example.devs.domain.skill.domain.repository.SkillFieldRepository;
 import com.example.devs.domain.tech_field.domain.TechField;
 import com.example.devs.domain.tech_field.domain.repository.TechFieldRepository;
@@ -34,24 +33,20 @@ public class MajorQueryService {
                 : skillFieldRepository.findAllWithSkillByFieldIds(fieldIds).stream()
                         .collect(Collectors.groupingBy(
                                 skillField -> skillField.getId().getFieldId(),
-                                Collectors.mapping(this::toTechStackResponse, Collectors.toList())
+                                Collectors.mapping(
+                                        skillField -> TechStackResponse.from(skillField.getSkill()),
+                                        Collectors.toList()
+                                )
                         ));
 
         List<MajorResponse> categories = fields.stream()
-                .map(field -> new MajorResponse(
+                .map(field -> MajorResponse.of(
                         field.getId(),
                         field.getCode().toUpperCase(Locale.ROOT),
                         techStacksByField.getOrDefault(field.getId(), List.of())
                 ))
                 .toList();
 
-        return new MajorListResponse(categories);
-    }
-
-    private TechStackResponse toTechStackResponse(SkillField skillField) {
-        return new TechStackResponse(
-                skillField.getSkill().getId(),
-                skillField.getSkill().getName()
-        );
+        return MajorListResponse.from(categories);
     }
 }

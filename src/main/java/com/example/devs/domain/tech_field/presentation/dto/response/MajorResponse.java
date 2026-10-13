@@ -7,4 +7,7 @@ public record MajorResponse(
         String major,
         List<TechStackResponse> techStacks
 ) {
+    public static MajorResponse of(Integer id, String major, List<TechStackResponse> techStacks) {
+        return new MajorResponse(id, major, techStacks);
+    }
 }
