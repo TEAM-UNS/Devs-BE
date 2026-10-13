@@ -26,7 +26,7 @@ public class UserMyQueryService {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        return UserMyQueryResponse.from(
+        return UserMyQueryResponse.of(
                 user,
                 userMajorRepository.findMajorsByUserId(userId),
                 userSkillRepository.findSkillsByUserId(userId)
