@@ -98,6 +98,7 @@ public class SecurityConfig {
 
                         //company
                         .requestMatchers(HttpMethod.GET, "/company").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/company/compare").authenticated()
 
                         //chat
                         .requestMatchers(HttpMethod.GET, "/chat/sessions").authenticated()
