@@ -98,6 +98,11 @@ public class SecurityConfig {
 
                         //company
                         .requestMatchers(HttpMethod.GET, "/company").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/company/compare/posting-counts").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/company/compare/top-skills").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/company/compare/match-rates").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/company/compare/common-skills").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/company/compare/skill-mentions").authenticated()
 
                         //chat
                         .requestMatchers(HttpMethod.GET, "/chat/sessions").authenticated()
