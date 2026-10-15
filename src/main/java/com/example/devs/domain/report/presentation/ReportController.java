@@ -27,7 +27,6 @@ public class ReportController {
     private final GetMaxDecreaseTechTrendService getMaxDecreaseTechTrendService;
     private final TechMentionQueryService techMentionQueryService;
     private final WeeklyCollectedPostingCountService weeklyCollectedPostingCountService;
-    private final EarliestPostingDateService earliestPostingDateService;
     private final GetLlmQueryService getLlmQueryService;
     private final CreateWeeklyReportsService createWeeklyReportsService;
     private final AdminKeyValidator adminKeyValidator;
@@ -54,11 +53,6 @@ public class ReportController {
             LocalDate baseDate
     ) {
         return getLlmQueryService.execute(majorId, baseDate);
-    }
-
-    @GetMapping("/earliest-posting-date")
-    public EarliestPostingDateResponse getEarliestPostingDate() {
-        return earliestPostingDateService.execute();
     }
 
     @GetMapping("/popular-tech-stack")
