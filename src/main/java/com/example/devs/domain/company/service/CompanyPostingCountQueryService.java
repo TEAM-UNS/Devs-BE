@@ -2,8 +2,8 @@ package com.example.devs.domain.company.service;
 
 import com.example.devs.domain.company.domain.Company;
 import com.example.devs.domain.company.domain.repository.CompanyQueryRepository;
-import com.example.devs.domain.company.presentation.dto.response.CompanyPostingCountListResponse;
-import com.example.devs.domain.company.presentation.dto.response.CompanyPostingCountResponse;
+import com.example.devs.domain.company.presentation.dto.response.company_posting.CompanyPostingCountListResponse;
+import com.example.devs.domain.company.presentation.dto.response.company_posting.CompanyPostingCountResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
