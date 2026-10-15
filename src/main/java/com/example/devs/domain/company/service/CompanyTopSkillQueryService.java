@@ -2,9 +2,9 @@ package com.example.devs.domain.company.service;
 
 import com.example.devs.domain.company.domain.Company;
 import com.example.devs.domain.company.domain.repository.CompanyQueryRepository;
-import com.example.devs.domain.company.presentation.dto.response.CompanyTopSkillListResponse;
-import com.example.devs.domain.company.presentation.dto.response.CompanyTopSkillResponse;
-import com.example.devs.domain.company.presentation.dto.response.SkillRankResponse;
+import com.example.devs.domain.company.presentation.dto.response.company_top_skill.CompanyTopSkillListResponse;
+import com.example.devs.domain.company.presentation.dto.response.company_top_skill.CompanyTopSkillResponse;
+import com.example.devs.domain.company.presentation.dto.response.company_skill.SkillRankResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

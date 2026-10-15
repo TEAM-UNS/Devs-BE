@@ -1,4 +1,4 @@
-package com.example.devs.domain.company.presentation.dto.response;
+package com.example.devs.domain.company.presentation.dto.response.company_skill;
 
 import java.util.List;
 

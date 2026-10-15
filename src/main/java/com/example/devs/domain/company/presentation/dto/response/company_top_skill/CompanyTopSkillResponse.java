@@ -1,6 +1,7 @@
-package com.example.devs.domain.company.presentation.dto.response;
+package com.example.devs.domain.company.presentation.dto.response.company_top_skill;
 
 import com.example.devs.domain.company.domain.Company;
+import com.example.devs.domain.company.presentation.dto.response.company_skill.SkillRankResponse;
 
 import java.util.List;
 

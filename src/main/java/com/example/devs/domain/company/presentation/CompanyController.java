@@ -1,9 +1,9 @@
 package com.example.devs.domain.company.presentation;
 
-import com.example.devs.domain.company.presentation.dto.response.CommonSkillListResponse;
+import com.example.devs.domain.company.presentation.dto.response.company_skill.CommonSkillListResponse;
 import com.example.devs.domain.company.presentation.dto.response.CompanyListResponse;
-import com.example.devs.domain.company.presentation.dto.response.CompanyPostingCountListResponse;
-import com.example.devs.domain.company.presentation.dto.response.CompanyTopSkillListResponse;
+import com.example.devs.domain.company.presentation.dto.response.company_posting.CompanyPostingCountListResponse;
+import com.example.devs.domain.company.presentation.dto.response.company_top_skill.CompanyTopSkillListResponse;
 import com.example.devs.domain.company.service.CommonSkillQueryService;
 import com.example.devs.domain.company.service.CompanyAllQueryService;
 import com.example.devs.domain.company.service.CompanyPostingCountQueryService;
