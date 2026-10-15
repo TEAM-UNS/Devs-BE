@@ -1,8 +1,10 @@
 package com.example.devs.domain.company.presentation;
 
+import com.example.devs.domain.company.presentation.dto.response.CommonSkillListResponse;
 import com.example.devs.domain.company.presentation.dto.response.CompanyListResponse;
 import com.example.devs.domain.company.presentation.dto.response.CompanyPostingCountListResponse;
 import com.example.devs.domain.company.presentation.dto.response.CompanyTopSkillListResponse;
+import com.example.devs.domain.company.service.CommonSkillQueryService;
 import com.example.devs.domain.company.service.CompanyAllQueryService;
 import com.example.devs.domain.company.service.CompanyPostingCountQueryService;
 import com.example.devs.domain.company.service.CompanyTopSkillQueryService;
@@ -23,6 +25,7 @@ public class CompanyController {
     private final CompanyAllQueryService companyAllQueryService;
     private final CompanyPostingCountQueryService companyPostingCountQueryService;
     private final CompanyTopSkillQueryService companyTopSkillQueryService;
+    private final CommonSkillQueryService commonSkillQueryService;
 
     @GetMapping
     public CompanyListResponse getCompanies(
@@ -46,4 +49,10 @@ public class CompanyController {
         return companyTopSkillQueryService.execute(companyIds);
     }
 
+    @GetMapping("/compare/common-skills")
+    public CommonSkillListResponse getCommonSkills(
+            @RequestParam(name = "company_ids") List<Long> companyIds
+    ) {
+        return commonSkillQueryService.execute(companyIds);
+    }
 }
