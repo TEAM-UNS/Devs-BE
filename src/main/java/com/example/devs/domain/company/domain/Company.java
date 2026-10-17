@@ -38,6 +38,9 @@ public class Company {
     @Column(name = "name_key", nullable = false, length = 200)
     private String nameKey;
 
+    @Column(name = "logo_url")
+    private String logoUrl;
+
     @Column(nullable = false, length = 200)
     private String name;
 
