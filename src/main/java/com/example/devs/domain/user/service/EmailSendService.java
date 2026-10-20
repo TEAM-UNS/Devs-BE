@@ -81,7 +81,7 @@ public class EmailSendService {
                     "이메일 인증 코드는 " + code + "입니다. 5분 안에 입력해 주세요.",
                     TEMPLATE.replace("{{code}}", code)
             );
-            helper.addInline("devs-logo", LOGO, "image/png");
+            helper.addInline("devs-logo", "devs-logo.png", LOGO, "image/png");
         };
     }
 
