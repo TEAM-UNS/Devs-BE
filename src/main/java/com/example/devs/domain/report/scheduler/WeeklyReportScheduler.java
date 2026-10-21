@@ -1,6 +1,7 @@
 package com.example.devs.domain.report.scheduler;
 
 import com.example.devs.domain.report.service.CreateWeeklyReportsService;
+import com.example.devs.domain.report.service.SendWeeklyReportMailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -13,10 +14,16 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class WeeklyReportScheduler {
     private final CreateWeeklyReportsService createWeeklyReportsService;
+    private final SendWeeklyReportMailsService sendWeeklyReportMailsService;
     private final Clock clock;
 
     @Scheduled(cron = "0 10 0 * * MON", zone = "Asia/Seoul")
     public void createLastWeekReports() {
         createWeeklyReportsService.execute(LocalDate.now(clock).minusWeeks(1), false);
+    }
+
+    @Scheduled(cron = "0 0 9 * * MON", zone = "Asia/Seoul")
+    public void sendLastWeekReportMails() {
+        sendWeeklyReportMailsService.execute(LocalDate.now(clock).minusWeeks(1));
     }
 }

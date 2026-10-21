@@ -4,6 +4,7 @@ import com.example.devs.domain.user.presentation.dto.request.*;
 import com.example.devs.domain.user.presentation.dto.response.AccessTokenResponse;
 import com.example.devs.domain.user.presentation.dto.response.OAuthLoginResponse;
 import com.example.devs.domain.user.presentation.dto.response.LoginResponse;
+import com.example.devs.domain.user.presentation.dto.response.ReportSubscriptionQueryResponse;
 import com.example.devs.domain.user.presentation.dto.response.UserMyQueryResponse;
 import com.example.devs.domain.user.service.*;
 import com.example.devs.global.security.jwt.JwtPrincipal;
@@ -31,6 +32,8 @@ public class UserController {
     private final GitHubOAuthLoginService gitHubOAuthLoginService;
     private final UserMyQueryService userMyQueryService;
     private final UserLogoutService userLogoutService;
+    private final ReportSubscriptionUpdateService reportSubscriptionUpdateService;
+    private final ReportSubscriptionQueryService reportSubscriptionQueryService;
 
     @PostMapping("/email/send")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -112,5 +115,21 @@ public class UserController {
         if (servletRequest.getSession(false) != null) {
             servletRequest.getSession(false).invalidate();
         }
+    }
+
+    @GetMapping("/report-subscription")
+    public ReportSubscriptionQueryResponse getReportSubscription(
+            @AuthenticationPrincipal JwtPrincipal principal
+    ) {
+        return reportSubscriptionQueryService.execute(principal.userId());
+    }
+
+    @PutMapping("/report-subscription")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateReportSubscription(
+            @AuthenticationPrincipal JwtPrincipal principal,
+            @Valid @RequestBody ReportSubscriptionUpdateRequest request
+    ) {
+        reportSubscriptionUpdateService.execute(principal.userId(), request);
     }
 }
