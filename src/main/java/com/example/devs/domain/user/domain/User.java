@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -39,9 +42,24 @@ public class User {
     @ColumnDefault("false")
     private boolean majorReportSubscribed;
 
-    public void updateReportSubscription(boolean totalReportSubscribed, boolean majorReportSubscribed) {
+    @Builder.Default
+    @ElementCollection
+    @CollectionTable(
+            name = "tbl_report_subscription",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Column(name = "field_id", nullable = false)
+    private Set<Integer> reportMajorIds = new HashSet<>();
+
+    public void updateReportSubscription(
+            boolean totalReportSubscribed,
+            boolean majorReportSubscribed,
+            Set<Integer> reportMajorIds
+    ) {
         this.totalReportSubscribed = totalReportSubscribed;
         this.majorReportSubscribed = majorReportSubscribed;
+        this.reportMajorIds.clear();
+        this.reportMajorIds.addAll(reportMajorIds);
     }
 
     public void updatePersonalHistory(PersonalHistory personalHistory) {
