@@ -26,7 +26,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class WeeklyReportMailSendService {
-    private static final String TOTAL_MAJOR_NAME = "전체";
+    public static final String TOTAL_MAJOR_NAME = "전체";
     private static final List<String> INLINE_IMAGES = List.of("report-logo", "arrow-up", "arrow-down", "arrow-same");
 
     private final ReportRepository reportRepository;
@@ -44,6 +44,10 @@ public class WeeklyReportMailSendService {
                 .map(TechField::getName)
                 .orElseThrow(MajorNotFoundException::new);
 
+        send(report, majorName, email);
+    }
+
+    public void send(Report report, String majorName, String email) {
         WeeklyReportMail mail = weeklyReportMailRenderer.render(report, majorName, email);
 
         try {
@@ -65,7 +69,7 @@ public class WeeklyReportMailSendService {
                 }
             });
         } catch (MailException exception) {
-            log.error("주간 리포트 메일 발송 실패. majorId={}, weekStartDate={}", majorId, weekStartDate, exception);
+            log.error("주간 리포트 메일 발송 실패. major={}, weekStartDate={}", majorName, report.getWeekStartDate(), exception);
             throw new ReportMailSendFailedException();
         }
     }
