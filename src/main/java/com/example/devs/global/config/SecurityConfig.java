@@ -69,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/user/logout").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/user/major").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/user/tech-stack").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/user/report-subscription").authenticated()
 
                         //oauth
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()

@@ -114,9 +114,13 @@ public class UserController {
             servletRequest.getSession(false).invalidate();
         }
     }
-    @PutMapping("/report-subcribe")
+
+    @PutMapping("/report-subscription")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void setSubcribeSetting(@AuthenticationPrincipal JwtPrincipal principal,@Valid @RequestBody ReportSubscriptionUpdateRequest request) {
-        reportSubscriptionUpdateService.execute(principal.userId(),request);
+    public void updateReportSubscription(
+            @AuthenticationPrincipal JwtPrincipal principal,
+            @Valid @RequestBody ReportSubscriptionUpdateRequest request
+    ) {
+        reportSubscriptionUpdateService.execute(principal.userId(), request);
     }
 }
