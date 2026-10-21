@@ -31,6 +31,7 @@ public class UserController {
     private final GitHubOAuthLoginService gitHubOAuthLoginService;
     private final UserMyQueryService userMyQueryService;
     private final UserLogoutService userLogoutService;
+    private final ReportSubscriptionUpdateService reportSubscriptionUpdateService;
 
     @PostMapping("/email/send")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -115,7 +116,7 @@ public class UserController {
     }
     @PutMapping("/report-subcribe")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void setSubcribeSetting(@AuthenticationPrincipal JwtPrincipal principal){
-
+    public void setSubcribeSetting(@AuthenticationPrincipal JwtPrincipal principal,@Valid @RequestBody ReportSubscriptionUpdateRequest request) {
+        reportSubscriptionUpdateService.execute(principal.userId(),request);
     }
 }
