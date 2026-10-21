@@ -1,0 +1,146 @@
+package com.example.devs.domain.report.presentation;
+
+import com.example.devs.domain.report.domain.ReportPeriod;
+import com.example.devs.domain.report.presentation.dto.response.*;
+import com.example.devs.domain.report.service.*;
+import com.example.devs.global.security.admin.AdminKeyValidator;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
+
+@RestController
+@RequestMapping("/report")
+@RequiredArgsConstructor
+public class ReportController {
+    private final PopularTechStackReportService popularTechStackReportService;
+    private final GetMaxIncreaseTechTrendService getMaxIncreaseTechTrendService;
+    private final GetMaxDecreaseTechTrendService getMaxDecreaseTechTrendService;
+    private final TechMentionQueryService techMentionQueryService;
+    private final WeeklyCollectedPostingCountService weeklyCollectedPostingCountService;
+    private final GetLlmQueryService getLlmQueryService;
+    private final CreateWeeklyReportsService createWeeklyReportsService;
+    private final AdminKeyValidator adminKeyValidator;
+    private final ReportWeekRangeService reportWeekRangeService;
+    private final WeeklyReportMailSendService weeklyReportMailSendService;
+    private final SendWeeklyReportMailsService sendWeeklyReportMailsService;
+
+    @PostMapping("/weekly")
+    @ResponseStatus(HttpStatus.CREATED)
+    public WeeklyReportsCreateResponse createWeeklyReports(
+            @RequestHeader(name = "X-Admin-Key", required = false) String adminKey,
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate,
+            @RequestParam(defaultValue = "false") boolean force
+    ) {
+        adminKeyValidator.validate(adminKey);
+        return createWeeklyReportsService.execute(baseDate, force);
+    }
+
+    @PostMapping("/weekly/mail")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void sendWeeklyReportMail(
+            @RequestHeader(name = "X-Admin-Key", required = false) String adminKey,
+            @RequestParam(name = "major_id", required = false) @Positive Integer majorId,
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate,
+            @RequestParam @NotBlank @Email String email
+    ) {
+        adminKeyValidator.validate(adminKey);
+        weeklyReportMailSendService.execute(majorId, baseDate, email);
+    }
+
+    @PostMapping("/weekly/mail/all")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void sendWeeklyReportMails(
+            @RequestHeader(name = "X-Admin-Key", required = false) String adminKey,
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        adminKeyValidator.validate(adminKey);
+        sendWeeklyReportMailsService.execute(baseDate);
+    }
+
+    @GetMapping("/llm")
+    public LlmReportQueryResponse getLlmReport(
+            @RequestParam(name = "major_id", required = false) @Positive Integer majorId,
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        return getLlmQueryService.execute(majorId, baseDate);
+    }
+
+    @GetMapping("/popular-tech-stack")
+    public PopularTechStackReportResponse getPopularTechStackReport(
+            @RequestParam(name = "major_id", required = false) @Positive Integer majorId,
+            @RequestParam ReportPeriod period,
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        return popularTechStackReportService.execute(majorId, period, baseDate);
+    }
+
+    @GetMapping("/max-increase")
+    public TechTrendResponse getMaxIncrease(
+            @RequestParam(name = "major_id", required = false) @Positive Integer majorId,
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        return getMaxIncreaseTechTrendService.execute(majorId, baseDate);
+    }
+
+    @GetMapping("/max-decrease")
+    public TechTrendResponse getMaxDecrease(
+            @RequestParam(name = "major_id", required = false) @Positive Integer majorId,
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        return getMaxDecreaseTechTrendService.execute(majorId, baseDate);
+    }
+
+    @GetMapping("/tech-mentions")
+    public TechMentionListResponse getTechMentions(
+            @RequestParam(name = "major_id", required = false) @Positive Integer majorId,
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        return techMentionQueryService.execute(majorId, baseDate);
+    }
+
+    @GetMapping("/weekly-collected-count")
+    public WeeklyCollectedPostingCountResponse getWeeklyCollectedPostingCount(
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        return weeklyCollectedPostingCountService.execute(null, baseDate);
+    }
+
+    @GetMapping("/week-range")
+    public ReportWeekRangeResponse getWeekRange(
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        return reportWeekRangeService.execute(baseDate);
+    }
+}

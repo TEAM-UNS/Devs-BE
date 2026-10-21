@@ -1,15 +1,78 @@
 spring:
+  jackson:
+    property-naming-strategy: LOWER_CAMEL_CASE
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - openid
+              - profile
+              - email
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+            scope:
+              - read:user
+              - user:email
+
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
 
   jpa:
+    open-in-view: false
     hibernate:
-      ddl-auto:
+      ddl-auto: update
+    properties:
+      hibernate:
+        hbm2ddl:
+          create_namespaces: true
 
   data:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
+
+  mvc:
+    async:
+      # LLM 응답 스트리밍이 기본 타임아웃(30초)에 끊기지 않도록 늘린다.
+      request-timeout: 3m
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: ${SESSION_COOKIE_SAME_SITE:lax}
+        secure: ${SESSION_COOKIE_SECURE:false}
+
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-expiration: 30m
+  refresh-expiration: 14d
+
+oauth:
+  frontend-redirect-uri: ${OAUTH_FRONTEND_REDIRECT_URI:http://localhost:5173/oauth/callback}
+
+admin:
+  key: ${ADMIN_KEY:}
+
+ai:
+  base-url: ${AI_BASE_URL:http://localhost:8000}
