@@ -69,6 +69,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/user/logout").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/user/major").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/user/tech-stack").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/user/report-subscription").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/user/report-subscription").authenticated()
 
                         //oauth
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
@@ -91,6 +93,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/report/tech-mentions").authenticated()
                         .requestMatchers(HttpMethod.GET, "/report/weekly-collected-count").authenticated()
                         .requestMatchers(HttpMethod.POST, "/report/weekly").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/report/weekly/mail").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/report/weekly/mail/all").permitAll()
                         .requestMatchers(HttpMethod.GET, "/report/week-range").authenticated()
 
                         //internal (AI 서버 → 백엔드 통지. 명세상 인증 없음)

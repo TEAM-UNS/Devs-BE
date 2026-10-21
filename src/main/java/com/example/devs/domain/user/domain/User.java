@@ -4,6 +4,10 @@ import com.example.devs.domain.user.exception.InvalidOAuthProfileException;
 import com.example.devs.domain.user.util.EmailNormalizer;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -29,6 +33,34 @@ public class User {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PersonalHistory personalHistory;
+
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    private boolean totalReportSubscribed;
+
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    private boolean majorReportSubscribed;
+
+    @Builder.Default
+    @ElementCollection
+    @CollectionTable(
+            name = "tbl_report_subscription",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Column(name = "field_id", nullable = false)
+    private Set<Integer> reportMajorIds = new HashSet<>();
+
+    public void updateReportSubscription(
+            boolean totalReportSubscribed,
+            boolean majorReportSubscribed,
+            Set<Integer> reportMajorIds
+    ) {
+        this.totalReportSubscribed = totalReportSubscribed;
+        this.majorReportSubscribed = majorReportSubscribed;
+        this.reportMajorIds.clear();
+        this.reportMajorIds.addAll(reportMajorIds);
+    }
 
     public void updatePersonalHistory(PersonalHistory personalHistory) {
         this.personalHistory = personalHistory;

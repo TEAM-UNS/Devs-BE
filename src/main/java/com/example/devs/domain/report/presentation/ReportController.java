@@ -4,6 +4,8 @@ import com.example.devs.domain.report.domain.ReportPeriod;
 import com.example.devs.domain.report.presentation.dto.response.*;
 import com.example.devs.domain.report.service.*;
 import com.example.devs.global.security.admin.AdminKeyValidator;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,6 +33,8 @@ public class ReportController {
     private final CreateWeeklyReportsService createWeeklyReportsService;
     private final AdminKeyValidator adminKeyValidator;
     private final ReportWeekRangeService reportWeekRangeService;
+    private final WeeklyReportMailSendService weeklyReportMailSendService;
+    private final SendWeeklyReportMailsService sendWeeklyReportMailsService;
 
     @PostMapping("/weekly")
     @ResponseStatus(HttpStatus.CREATED)
@@ -43,6 +47,32 @@ public class ReportController {
     ) {
         adminKeyValidator.validate(adminKey);
         return createWeeklyReportsService.execute(baseDate, force);
+    }
+
+    @PostMapping("/weekly/mail")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void sendWeeklyReportMail(
+            @RequestHeader(name = "X-Admin-Key", required = false) String adminKey,
+            @RequestParam(name = "major_id", required = false) @Positive Integer majorId,
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate,
+            @RequestParam @NotBlank @Email String email
+    ) {
+        adminKeyValidator.validate(adminKey);
+        weeklyReportMailSendService.execute(majorId, baseDate, email);
+    }
+
+    @PostMapping("/weekly/mail/all")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void sendWeeklyReportMails(
+            @RequestHeader(name = "X-Admin-Key", required = false) String adminKey,
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        adminKeyValidator.validate(adminKey);
+        sendWeeklyReportMailsService.execute(baseDate);
     }
 
     @GetMapping("/llm")
