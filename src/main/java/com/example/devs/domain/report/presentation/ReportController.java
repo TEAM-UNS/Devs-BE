@@ -34,6 +34,7 @@ public class ReportController {
     private final AdminKeyValidator adminKeyValidator;
     private final ReportWeekRangeService reportWeekRangeService;
     private final WeeklyReportMailSendService weeklyReportMailSendService;
+    private final SendWeeklyReportMailsService sendWeeklyReportMailsService;
 
     @PostMapping("/weekly")
     @ResponseStatus(HttpStatus.CREATED)
@@ -60,6 +61,18 @@ public class ReportController {
     ) {
         adminKeyValidator.validate(adminKey);
         weeklyReportMailSendService.execute(majorId, baseDate, email);
+    }
+
+    @PostMapping("/weekly/mail/all")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void sendWeeklyReportMails(
+            @RequestHeader(name = "X-Admin-Key", required = false) String adminKey,
+            @RequestParam(name = "base_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate baseDate
+    ) {
+        adminKeyValidator.validate(adminKey);
+        sendWeeklyReportMailsService.execute(baseDate);
     }
 
     @GetMapping("/llm")

@@ -94,6 +94,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/report/weekly-collected-count").authenticated()
                         .requestMatchers(HttpMethod.POST, "/report/weekly").permitAll()
                         .requestMatchers(HttpMethod.POST, "/report/weekly/mail").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/report/weekly/mail/all").permitAll()
                         .requestMatchers(HttpMethod.GET, "/report/week-range").authenticated()
 
                         //internal (AI 서버 → 백엔드 통지. 명세상 인증 없음)
