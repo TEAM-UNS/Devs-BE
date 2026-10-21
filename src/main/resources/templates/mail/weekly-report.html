@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 디자인이 다크 배경이라, 메일 앱이 색을 다시 뒤집지 않도록 다크 전용임을 알린다 -->
+    <meta name="color-scheme" content="dark" />
+    <meta name="supported-color-schemes" content="dark" />
+    <!-- iOS 메일이 날짜·숫자를 링크(파란 밑줄)로 바꾸지 않게 한다 -->
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    <title>Devs 주간 리포트</title>
+
+    <!--
+      중괄호 두 겹으로 표시한 자리를 채운다. 상승·하락 표시, 막대, 순위 줄은 Java에서 HTML 조각으로 만들어 넣는다.
+      - reportYear · reportMonth · reportWeek · startDate · endDate (yyyy.MM.dd) · majorName
+      - preheader · topRiseName · topRiseChange · topFallName · topFallChange
+      - chartBars · chartLabels: 막대 최대 5개 (0~100 px, 막대 10개 중 가장 큰 값 = 100)
+      - rankRows: 순위 최대 8줄. 화살표 arrow-up | arrow-down | arrow-same, 색 #ff7272 | #62caf4 | #adb5bd
+      - totalPostings (19,283) · email
+      - summaryBody: HtmlUtils.htmlEscape 후 줄바꿈을 <br />로 바꿔 넣는다 (이름·이메일도 이스케이프)
+      inline 첨부(cid, image/png): report-logo · arrow-up · arrow-down · arrow-same
+    -->
+
+    <!--
+      메일 클라이언트는 <style>을 지우거나 무시하는 경우가 많다(Gmail 일부, Outlook).
+      그래서 화면이 깨지면 안 되는 스타일은 전부 태그에 인라인으로 두고,
+      여기에는 "있으면 더 좋은" 보강만 둔다.
+    -->
+    <style>
+      /*
+        이번 주 막대가 아래에서 위로 자란다 (웹 주간 리포트 bar-grow와 같은 값).
+        to를 생략해 인라인 height가 종료값이 된다. 애니메이션을 지원하지 않거나
+        <style>을 지우는 메일 앱은 이 규칙을 무시하고 최종 높이로 그린다.
+      */
+      @keyframes bar-grow {
+        from {
+          height: 0;
+        }
+      }
+      .bar-current {
+        animation: bar-grow 400ms cubic-bezier(0, 0, 0.2, 1);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .bar-current {
+          animation: none;
+        }
+      }
+
+      /* 좁은 화면: 좌우 여백을 줄이고, 상승·하락 카드를 세로로 쌓는다 */
+      @media only screen and (max-width: 480px) {
+        .card-body {
+          padding: 36px 20px !important;
+        }
+        .footer {
+          padding: 28px 20px !important;
+        }
+        .stat-col {
+          display: block !important;
+          width: 100% !important;
+          padding: 0 !important;
+        }
+        .stat-col + .stat-col {
+          padding-top: 12px !important;
+        }
+        .chart-group {
+          width: 20% !important;
+        }
+        .chart-table {
+          width: 100% !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body style="margin: 0; padding: 0; background-color: #1e2126">
+    <!--
+      받은편지함 미리보기 문구. 메일 목록에서 제목 옆에 보이고, 본문에는 보이지 않는다.
+      뒤의 공백 문자들은 본문 첫 문장이 미리보기에 이어 붙는 것을 막는다.
+    -->
+    <div
+      style="display: none; max-height: 0; max-width: 0; overflow: hidden; opacity: 0;
+        font-size: 1px; line-height: 1px; color: #1e2126; mso-hide: all"
+    >
+      {{preheader}}
+      &#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;
+    </div>
+
+    <!-- 바깥 래퍼: 메일 앱 배경을 카드와 같은 색으로 채운다 -->
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      style="background-color: #1e2126"
+    >
+      <tr>
+        <td align="center" style="padding: 0">
+          <!-- 카드: Figma 프레임 폭 600, radius 12 -->
+          <table
+            role="presentation"
+            width="600"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="
+              width: 100%;
+              max-width: 600px;
+              background-color: #1e2126;
+              border-radius: 12px;
+              font-family: Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
+                'Malgun Gothic', '맑은 고딕', sans-serif;
+            "
+          >
+            <tr>
+              <td class="card-body" style="padding: 48px">
+                <!-- ───────── 헤더: 로고 + 제목 + 기간 ───────── -->
+                <!-- Gmail은 data: URI 이미지를 지우므로 로고는 메일에 첨부(cid)해서 보여준다 -->
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td align="center">
+                      <img
+                        src="cid:report-logo"
+                        width="72"
+                        height="14"
+                        alt="Devs"
+                        style="display: block; width: 72px; height: 14px; border: 0; outline: none"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      align="center"
+                      style="padding-top: 24px; font-size: 24px; font-weight: 700; line-height: 1.2; color: #ffffff"
+                    >
+                      {{reportMonth}}월 {{reportWeek}}주차, {{majorName}} 리포트
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      align="center"
+                      style="padding-top: 4px; font-size: 14px; line-height: 1.5; color: #adb5bd"
+                    >
+                      {{startDate}} ~ {{endDate}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-top: 24px">
+                      <div style="height: 1px; line-height: 1px; font-size: 0; background-color: #4b4d51">&nbsp;</div>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- ───────── 이번주 최대 상승 / 하락 ───────── -->
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="margin-top: 24px"
+                >
+                  <tr>
+                    <td class="stat-col" width="50%" valign="top" style="padding-right: 6px">
+                      <table
+                        role="presentation"
+                        width="100%"
+                        cellpadding="0"
+                        cellspacing="0"
+                        border="0"
+                        style="background-color: #343a40; border-radius: 6px"
+                      >
+                        <tr>
+                          <td valign="top" style="padding: 16px 0 16px 20px">
+                            <div style="font-size: 14px; line-height: 1.5; color: #ffffff">이번주 최대 상승</div>
+                            <div style="font-size: 20px; font-weight: 700; line-height: 1.2; color: #ffffff">
+                              {{topRiseName}}
+                            </div>
+                          </td>
+                          <td
+                            valign="top"
+                            align="right"
+                            style="padding: 16px 20px 16px 0; line-height: 1.5; color: #adb5bd; white-space: nowrap"
+                          >
+                            {{topRiseChange}}
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td class="stat-col" width="50%" valign="top" style="padding-left: 6px">
+                      <table
+                        role="presentation"
+                        width="100%"
+                        cellpadding="0"
+                        cellspacing="0"
+                        border="0"
+                        style="background-color: #343a40; border-radius: 6px"
+                      >
+                        <tr>
+                          <td valign="top" style="padding: 16px 0 16px 20px">
+                            <div style="font-size: 14px; line-height: 1.5; color: #ffffff">이번주 최대 하락</div>
+                            <div style="font-size: 20px; font-weight: 700; line-height: 1.2; color: #ffffff">
+                              {{topFallName}}
+                            </div>
+                          </td>
+                          <td
+                            valign="top"
+                            align="right"
+                            style="padding: 16px 20px 16px 0; line-height: 1.5; color: #adb5bd; white-space: nowrap"
+                          >
+                            {{topFallChange}}
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- ───────── 주요 기술 언급량 (막대 차트) ───────── -->
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="margin-top: 36px"
+                >
+                  <tr>
+                    <td style="font-size: 18px; font-weight: 600; line-height: 1.5; color: #ffffff">
+                      주요 기술 언급량
+                    </td>
+                    <td align="right" style="font-size: 12px; line-height: 1.5; color: #ced4da; white-space: nowrap">
+                      <span
+                        style="display: inline-block; width: 6px; height: 6px; border-radius: 3px; background-color: #495057; vertical-align: middle"
+                      ></span>
+                      <span style="vertical-align: middle">&nbsp;지난 주</span>
+                      &nbsp;
+                      <span
+                        style="display: inline-block; width: 6px; height: 6px; border-radius: 3px; background-color: #aa5ef1; vertical-align: middle"
+                      ></span>
+                      <span style="vertical-align: middle">&nbsp;이번 주</span>
+                    </td>
+                  </tr>
+                </table>
+
+                <!--
+                  막대 높이는 그룹 높이 100px 기준의 px 값이다 (가장 큰 값 = 100).
+                  그라데이션을 못 그리는 메일 앱(Outlook 데스크톱)에서는 background-color로 대체된다.
+                -->
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="margin-top: 6px; background-color: #1e2126; border-radius: 6px"
+                >
+                  <tr>
+                    <td align="center" style="padding: 12px 0">
+                      <table class="chart-table" role="presentation" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          {{chartBars}}
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- 차트 라벨: 막대 그룹과 같은 80px 칸에 맞춘다 -->
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 6px">
+                  <tr>
+                    <td align="center">
+                      <table
+                        class="chart-table"
+                        role="presentation"
+                        cellpadding="0"
+                        cellspacing="0"
+                        border="0"
+                        style="font-size: 12px; line-height: 1.5; color: #ced4da"
+                      >
+                        <tr>
+                          {{chartLabels}}
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- ───────── 가장 많이 찾은 기술 스택 ───────── -->
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="margin-top: 36px"
+                >
+                  <tr>
+                    <td
+                      colspan="2"
+                      style="padding-bottom: 16px; font-size: 18px; font-weight: 600; line-height: 1.5; color: #ffffff"
+                    >
+                      가장 많이 찾은 기술 스택
+                    </td>
+                  </tr>
+                  {{rankRows}}
+                </table>
+
+                <!-- ───────── AI 리포트 요약 ───────── -->
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="margin-top: 36px; background-color: #343a40; border-radius: 6px"
+                >
+                  <tr>
+                    <td style="padding: 24px">
+                      <div style="font-size: 18px; font-weight: 600; line-height: 1.5; color: #ffffff">
+                        [AI 리포트] {{reportYear}}년 {{reportMonth}}월 {{reportWeek}}주차 요약
+                      </div>
+                      <!-- Figma 주석: 본문은 최대 5줄까지 -->
+                      <div style="margin-top: 12px; font-size: 14px; line-height: 1.5; color: #dee2e6; word-break: keep-all">
+                        {{summaryBody}}
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td
+                      align="center"
+                      style="padding-top: 12px; font-size: 12px; line-height: 1.5; color: #868e96"
+                    >
+                      이번 주 수집된 {{totalPostings}}개의 공고를 분석한 결과입니다.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-top: 24px">
+                      <div style="height: 1px; line-height: 1px; font-size: 0; background-color: #4b4d51">&nbsp;</div>
+                    </td>
+                  </tr>
+                  <!-- ───────── CTA ───────── -->
+                  <tr>
+                    <td
+                      align="center"
+                      style="padding-top: 24px; font-size: 14px; line-height: 1.5; color: #ffffff"
+                    >
+                      Devs에서 더 많은 정보 확인하기
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="center" style="padding-top: 12px">
+                      <!-- 버튼 전체가 눌리도록 a에 padding을 준다 -->
+                      <a
+                        href="https://kangyu.shop"
+                        target="_blank"
+                        style="
+                          display: inline-block;
+                          padding: 4px 16px;
+                          background-color: #aa5ef1;
+                          border-radius: 6px;
+                          font-size: 16px;
+                          font-weight: 600;
+                          line-height: 1.5;
+                          color: #ffffff;
+                          text-decoration: none;
+                        "
+                        >Devs 바로가기</a
+                      >
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- ───────── 푸터 ───────── -->
+            <tr>
+              <td class="footer" style="padding: 32px 36px; background-color: #000000; border-radius: 12px">
+                <img
+                  src="cid:report-logo"
+                  width="105"
+                  height="20"
+                  alt="Devs"
+                  style="display: block; width: 105px; height: 20px; border: 0; outline: none"
+                />
+                <div style="margin-top: 20px; height: 1px; line-height: 1px; font-size: 0; background-color: #343a40">&nbsp;</div>
+                <div style="margin-top: 20px; font-size: 14px; line-height: 1.5; color: #ffffff">
+                  Contact
+                  <span style="color: #495057">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                  <a href="mailto:teamuns2026@gmail.com" style="color: #ffffff; text-decoration: none">teamuns2026@gmail.com</a>
+                </div>
+                <div style="margin-top: 4px; font-size: 14px; line-height: 1.5; color: #ffffff; word-break: keep-all">
+                  Devs 주간 기술 트렌드 리포트 구독 신청 시 수집된 이메일 ({{email}})로 발송되었습니다.
+                </div>
+                <div style="margin-top: 16px; font-size: 12px; line-height: 1.5; color: #495057">
+                  © 2026 UNS. All rights reserved.
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
