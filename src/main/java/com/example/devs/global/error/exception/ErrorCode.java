@@ -1,0 +1,58 @@
+package com.example.devs.global.error.exception;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+
+@Getter
+@RequiredArgsConstructor
+public enum ErrorCode {
+    INVALID_LOGIN_CREDENTIALS(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 일치하지 않습니다."),
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 Refresh Token입니다."),
+    UNAUTHENTICATED_USER(HttpStatus.UNAUTHORIZED, "인증이 필요합니다."),
+    INVALID_OAUTH_PROFILE(HttpStatus.BAD_REQUEST, "Google 계정 정보를 확인할 수 없습니다."),
+    INVALID_GITHUB_OAUTH_PROFILE(HttpStatus.BAD_REQUEST, "GitHub 계정 정보를 확인할 수 없습니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
+    REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "리포트를 찾을 수 없습니다."),
+    REPORT_WEEK_NOT_FINISHED(HttpStatus.BAD_REQUEST, "아직 끝나지 않은 주의 리포트는 생성할 수 없습니다."),
+    REPORT_MAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "리포트 메일 발송에 실패했습니다."),
+    INVALID_ADMIN_KEY(HttpStatus.FORBIDDEN, "관리자 키가 올바르지 않습니다."),
+    EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다."),
+    EMAIL_VERIFICATION_REQUEST_LIMIT(
+            HttpStatus.TOO_MANY_REQUESTS,
+            "인증 코드는 5분 후에 다시 요청할 수 있습니다."
+    ),
+    EMAIL_VERIFICATION_CODE_EXPIRED(
+            HttpStatus.BAD_REQUEST,
+            "인증 코드가 만료되었거나 존재하지 않습니다."
+    ),
+    EMAIL_VERIFICATION_CODE_MISMATCH(
+            HttpStatus.BAD_REQUEST,
+            "이메일 인증 코드가 일치하지 않습니다."
+    ),
+    EMAIL_NOT_VERIFIED(HttpStatus.FORBIDDEN, "이메일 인증이 필요합니다."),
+    EMAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "인증 이메일 발송에 실패했습니다."),
+    MAJOR_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 전공이 포함되어 있습니다."),
+    SKILL_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 기술이 포함되어 있습니다."),
+    SKILL_TECH_FIELD_MISMATCH(
+            HttpStatus.BAD_REQUEST,
+            "선택한 전공에 속하지 않는 기술이 포함되어 있습니다."
+    ),
+    COMPANY_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 기업이 포함되어 있습니다."),
+    INVALID_COMPARE_COMPANY_COUNT(
+            HttpStatus.BAD_REQUEST,
+            "비교할 기업은 2개 이상 5개 이하로 선택해야 합니다."
+    ),
+    INCREASING_TECH_TREND_NOT_FOUND(
+            HttpStatus.NOT_FOUND,
+            "증가한 기술 추이 데이터를 찾을 수 없습니다."
+    ),
+    DECREASING_TECH_TREND_NOT_FOUND(
+            HttpStatus.NOT_FOUND,
+            "감소한 기술 추이 데이터를 찾을 수 없습니다."
+    ),
+    CHAT_SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "채팅 세션을 찾을 수 없습니다.");
+
+    private final HttpStatus status;
+    private final String message;
+}

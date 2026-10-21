@@ -1,0 +1,147 @@
+package com.example.devs.global.config;
+
+import com.example.devs.global.security.jwt.JwtAuthenticationFilter;
+import com.example.devs.global.security.jwt.JwtProperties;
+import com.example.devs.global.security.oauth.GitHubOAuth2UserService;
+import com.example.devs.global.security.oauth.OAuthProperties;
+import jakarta.servlet.DispatcherType;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+
+@Configuration
+@RequiredArgsConstructor
+@EnableConfigurationProperties({JwtProperties.class, OAuthProperties.class, CorsProperties.class})
+public class SecurityConfig {
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final OAuthProperties oauthProperties;
+    private final GitHubOAuth2UserService gitHubOAuth2UserService;
+    private final CorsProperties corsProperties;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth
+                        //async (SSE 스트리밍 완료 시 재디스패치는 JWT 필터를 거치지 않는다)
+                        .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
+
+                        //preflight
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        //error
+                        .requestMatchers("/error").permitAll()
+
+                        //swagger
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
+                        //email
+                        .requestMatchers(HttpMethod.POST, "/user/email/send").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/email/verify").permitAll()
+
+                        //user
+                        .requestMatchers(HttpMethod.POST, "/user/signup").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/reissue").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/oauth/google/token").hasAuthority("OIDC_USER")
+                        .requestMatchers(HttpMethod.POST, "/user/oauth/github/token").hasAuthority("OAUTH2_USER")
+                        .requestMatchers(HttpMethod.GET, "/user/my").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/user/logout").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/user/major").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/user/tech-stack").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/user/report-subscription").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/user/report-subscription").authenticated()
+
+                        //oauth
+                        .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
+
+                        //major
+                        .requestMatchers(HttpMethod.GET, "/majors").permitAll()
+
+                        //dashboard
+                        .requestMatchers(HttpMethod.GET, "/dashboard/summary").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/dashboard/popular-tech-stacks").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/dashboard/company-size-tech-stacks").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/dashboard/best-tech-stacks").authenticated()
+
+                        //report
+                        .requestMatchers(HttpMethod.GET, "/report/llm").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/report/earliest-posting-date").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/report/popular-tech-stack").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/report/max-increase").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/report/max-decrease").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/report/tech-mentions").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/report/weekly-collected-count").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/report/weekly").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/report/weekly/mail").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/report/weekly/mail/all").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/report/week-range").authenticated()
+
+                        //internal (AI 서버 → 백엔드 통지. 명세상 인증 없음)
+                        .requestMatchers(HttpMethod.POST, "/internal/reports/ready").permitAll()
+
+                        //company
+                        .requestMatchers(HttpMethod.GET, "/company").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/company/compare/posting-counts").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/company/compare/top-skills").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/company/compare/match-rates").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/company/compare/common-skills").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/company/compare/skill-mentions").authenticated()
+
+                        //chat
+                        .requestMatchers(HttpMethod.GET, "/chat/sessions").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/chat/sessions/{sessionId}/messages").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/chat/messages").authenticated()
+
+                        .anyRequest().denyAll())
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(gitHubOAuth2UserService))
+                        .defaultSuccessUrl(
+                                oauthProperties.frontendRedirectUri().toString(),
+                                true
+                        ))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                .addFilterBefore(
+                        jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                );
+
+        return http.build();
+    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(corsProperties.allowedOrigins());
+        configuration.setAllowedMethods(Arrays.asList("OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"));
+        configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
+}
