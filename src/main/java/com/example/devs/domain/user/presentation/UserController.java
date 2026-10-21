@@ -116,7 +116,6 @@ public class UserController {
     @PutMapping("/report-subcribe")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void setSubcribeSetting(@AuthenticationPrincipal JwtPrincipal principal){
-        
 
     }
 }
