@@ -4,6 +4,7 @@ import com.example.devs.domain.user.exception.InvalidOAuthProfileException;
 import com.example.devs.domain.user.util.EmailNormalizer;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @AllArgsConstructor
@@ -29,6 +30,19 @@ public class User {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PersonalHistory personalHistory;
+
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    private boolean totalReportSubscribed;
+
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    private boolean majorReportSubscribed;
+
+    public void updateReportSubscription(boolean totalReportSubscribed, boolean majorReportSubscribed) {
+        this.totalReportSubscribed = totalReportSubscribed;
+        this.majorReportSubscribed = majorReportSubscribed;
+    }
 
     public void updatePersonalHistory(PersonalHistory personalHistory) {
         this.personalHistory = personalHistory;
