@@ -113,6 +113,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/chat/sessions/{sessionId}/messages").authenticated()
                         .requestMatchers(HttpMethod.POST, "/chat/messages").authenticated()
 
+                        //roadmap
+                        .requestMatchers(HttpMethod.POST, "/roadmap").authenticated()
+
                         .anyRequest().denyAll())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
