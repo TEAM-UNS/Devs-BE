@@ -114,6 +114,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/chat/sessions/{sessionId}").authenticated()
                         .requestMatchers(HttpMethod.POST, "/chat/messages").authenticated()
 
+                        //roadmap
+                        .requestMatchers(HttpMethod.POST, "/roadmap").authenticated()
+
                         .anyRequest().denyAll())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
