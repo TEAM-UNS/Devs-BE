@@ -1,0 +1,46 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-stag
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, devs-server]
+    defaults:
+      run:
+        working-directory: /home/kanghee/apps/Devs-BE-stag
+    steps:
+      - name: Pull latest code
+        run: |
+          git fetch origin develop
+          git reset --hard origin/develop
+
+      - name: Build and restart app
+        run: docker compose -f compose.stag.yml up -d --build --no-deps app
+
+      - name: Wait for app
+        run: |
+          for i in $(seq 1 40); do
+            address=$(docker compose -f compose.stag.yml port app 8080 2>/dev/null || true)
+            code=$(curl -s -o /dev/null -w '%{http_code}' "http://${address}/" || true)
+            if [ -n "$address" ] && [ "$code" != "000" ]; then
+              echo "app is up (HTTP $code)"
+              exit 0
+            fi
+            sleep 3
+          done
+          docker compose -f compose.stag.yml logs --tail 200 app
+          exit 1
+
+      - name: Clean up old images
+        if: always()
+        run: docker image prune -f
