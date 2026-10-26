@@ -55,7 +55,8 @@ public class RoadmapCreateService {
                             request.majorId(),
                             request.companyIds(),
                             request.skillIds(),
-                            request.targetWeeks()
+                            request.targetWeeks(),
+                            request.additionalComment()
                     ))
                     .retrieve()
                     .toBodilessEntity()
@@ -71,6 +72,7 @@ public class RoadmapCreateService {
             @JsonProperty("field_id") Integer fieldId,
             @JsonProperty("company_ids") Set<Long> companyIds,
             @JsonProperty("skill_ids") Set<Integer> skillIds,
-            @JsonProperty("target_weeks") Integer targetWeeks
+            @JsonProperty("target_weeks") Integer targetWeeks,
+            @JsonProperty("additional_comment") String additionalComment
     ) {}
 }
