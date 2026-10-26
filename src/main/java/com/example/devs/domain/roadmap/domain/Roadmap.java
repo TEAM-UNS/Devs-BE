@@ -61,11 +61,6 @@ public class Roadmap {
     private int targetWeeks;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "company_ids", nullable = false, columnDefinition = "jsonb")
-    @ColumnDefault("'[]'::jsonb")
-    private List<Long> companyIds = new ArrayList<>();
-
-    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "skill_ids", nullable = false, columnDefinition = "jsonb")
     @ColumnDefault("'[]'::jsonb")
     private List<Integer> skillIds = new ArrayList<>();
@@ -95,11 +90,10 @@ public class Roadmap {
     private OffsetDateTime completedAt;
 
     @Builder
-    public Roadmap(Long userId, TechField field, int targetWeeks, List<Long> companyIds, List<Integer> skillIds) {
+    public Roadmap(Long userId, TechField field, int targetWeeks, List<Integer> skillIds) {
         this.userId = userId;
         this.field = field;
         this.targetWeeks = targetWeeks;
-        this.companyIds = companyIds;
         this.skillIds = skillIds;
     }
 

@@ -1,7 +1,5 @@
 package com.example.devs.domain.roadmap.service;
 
-import com.example.devs.domain.company.domain.repository.CompanyRepository;
-import com.example.devs.domain.company.exception.CompanyNotFoundException;
 import com.example.devs.domain.roadmap.domain.Roadmap;
 import com.example.devs.domain.roadmap.domain.repository.RoadmapRepository;
 import com.example.devs.domain.roadmap.exception.RoadmapAlreadyGeneratingException;
@@ -35,7 +33,6 @@ public class RoadmapCreateService {
 
     private final UserFacade userFacade;
     private final TechFieldRepository techFieldRepository;
-    private final CompanyRepository companyRepository;
     private final SkillRepository skillRepository;
     private final RoadmapRepository roadmapRepository;
     private final WebClient aiWebClient;
@@ -45,10 +42,6 @@ public class RoadmapCreateService {
 
         TechField field = techFieldRepository.findById(request.majorId())
                 .orElseThrow(MajorNotFoundException::new);
-
-        if (companyRepository.findAllById(request.companyIds()).size() != request.companyIds().size()) {
-            throw new CompanyNotFoundException();
-        }
 
         if (skillRepository.findAllById(request.skillIds()).size() != request.skillIds().size()) {
             throw new SkillNotFoundException();
@@ -67,7 +60,6 @@ public class RoadmapCreateService {
                     .userId(userId)
                     .field(field)
                     .targetWeeks(request.targetWeeks())
-                    .companyIds(new ArrayList<>(request.companyIds()))
                     .skillIds(new ArrayList<>(request.skillIds()))
                     .build());
         } catch (DataIntegrityViolationException e) {
@@ -82,7 +74,6 @@ public class RoadmapCreateService {
                             roadmap.getId(),
                             userId,
                             request.majorId(),
-                            request.companyIds(),
                             request.skillIds(),
                             request.targetWeeks(),
                             request.additionalComment()
@@ -104,7 +95,6 @@ public class RoadmapCreateService {
             @JsonProperty("roadmap_id") Long roadmapId,
             @JsonProperty("user_id") Long userId,
             @JsonProperty("field_id") Integer fieldId,
-            @JsonProperty("company_ids") Set<Long> companyIds,
             @JsonProperty("skill_ids") Set<Integer> skillIds,
             @JsonProperty("target_weeks") Integer targetWeeks,
             @JsonProperty("additional_comment") String additionalComment
