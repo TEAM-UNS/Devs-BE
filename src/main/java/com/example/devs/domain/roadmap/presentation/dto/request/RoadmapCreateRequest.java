@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.util.Set;
 
@@ -22,6 +23,9 @@ public record RoadmapCreateRequest(
         @NotNull(message = "목표 기간을 선택해주세요.")
         @Min(value = 1, message = "목표 기간은 1~12주 사이로 선택해야 합니다.")
         @Max(value = 12, message = "목표 기간은 1~12주 사이로 선택해야 합니다.")
-        Integer targetWeeks
+        Integer targetWeeks,
+
+        @Size(max = 500, message = "추가 의견은 500자 이하로 작성해야 합니다.")
+        String additionalComment
 ) {
 }
