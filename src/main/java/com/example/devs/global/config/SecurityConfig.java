@@ -111,6 +111,7 @@ public class SecurityConfig {
                         //chat
                         .requestMatchers(HttpMethod.GET, "/chat/sessions").authenticated()
                         .requestMatchers(HttpMethod.GET, "/chat/sessions/{sessionId}/messages").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/chat/sessions/{sessionId}").authenticated()
                         .requestMatchers(HttpMethod.POST, "/chat/messages").authenticated()
 
                         .anyRequest().denyAll())
