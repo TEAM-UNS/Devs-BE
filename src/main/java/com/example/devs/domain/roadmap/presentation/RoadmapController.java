@@ -1,6 +1,7 @@
 package com.example.devs.domain.roadmap.presentation;
 
 import com.example.devs.domain.roadmap.presentation.dto.request.RoadmapCreateRequest;
+import com.example.devs.domain.roadmap.presentation.dto.response.RoadmapCreateResponse;
 import com.example.devs.domain.roadmap.service.RoadmapCreateService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class RoadmapController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void create(@Valid @RequestBody RoadmapCreateRequest request) {
-        roadmapCreateService.execute(request);
+    public RoadmapCreateResponse create(@Valid @RequestBody RoadmapCreateRequest request) {
+        return roadmapCreateService.execute(request);
     }
 }
