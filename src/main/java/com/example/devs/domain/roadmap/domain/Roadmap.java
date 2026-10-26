@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -92,4 +93,22 @@ public class Roadmap {
 
     @Column(name = "completed_at")
     private OffsetDateTime completedAt;
+
+    @Builder
+    public Roadmap(Long userId, TechField field, int targetWeeks, List<Long> companyIds, List<Integer> skillIds) {
+        this.userId = userId;
+        this.field = field;
+        this.targetWeeks = targetWeeks;
+        this.companyIds = companyIds;
+        this.skillIds = skillIds;
+    }
+
+    public boolean isInProgress() {
+        return status == RoadmapStatus.PENDING || status == RoadmapStatus.GENERATING;
+    }
+
+    public void fail(String errorMessage) {
+        this.status = RoadmapStatus.FAILED;
+        this.errorMessage = errorMessage;
+    }
 }
