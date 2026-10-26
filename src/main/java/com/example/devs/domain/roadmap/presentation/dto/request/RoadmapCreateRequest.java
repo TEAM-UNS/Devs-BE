@@ -14,9 +14,6 @@ public record RoadmapCreateRequest(
         @Positive(message = "전공 ID는 양수여야 합니다.")
         Integer majorId,
 
-        @NotEmpty(message = "회사를 한 개 이상 선택하셔야합니다.")
-        Set<@Positive(message = "회사 ID는 양수여야 합니다.") Long> companyIds,
-
         @NotEmpty(message = "기술을 한 개 이상 선택해야 합니다.")
         Set<@Positive(message = "기술 ID는 양수여야 합니다.") Integer> skillIds,
 
