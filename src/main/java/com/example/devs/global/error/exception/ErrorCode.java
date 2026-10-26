@@ -53,7 +53,8 @@ public enum ErrorCode {
     ),
     CHAT_SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "채팅 세션을 찾을 수 없습니다."),
     ROADMAP_GENERATION_REQUEST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "로드맵 생성 요청에 실패했습니다."),
-    ROADMAP_ALREADY_GENERATING(HttpStatus.CONFLICT, "이미 로드맵을 생성하고 있습니다.");
+    ROADMAP_ALREADY_GENERATING(HttpStatus.CONFLICT, "이미 로드맵을 생성하고 있습니다."),
+    ROADMAP_NOT_FOUND(HttpStatus.NOT_FOUND, "로드맵을 찾을 수 없습니다.");
 
     private final HttpStatus status;
     private final String message;
