@@ -116,6 +116,7 @@ public class SecurityConfig {
 
                         //roadmap
                         .requestMatchers(HttpMethod.POST, "/roadmap").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/roadmap").authenticated()
                         .requestMatchers(HttpMethod.GET, "/roadmap/{roadmapId}/status").authenticated()
 
                         .anyRequest().denyAll())

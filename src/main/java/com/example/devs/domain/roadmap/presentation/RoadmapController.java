@@ -2,8 +2,10 @@ package com.example.devs.domain.roadmap.presentation;
 
 import com.example.devs.domain.roadmap.presentation.dto.request.RoadmapCreateRequest;
 import com.example.devs.domain.roadmap.presentation.dto.response.RoadmapCreateResponse;
+import com.example.devs.domain.roadmap.presentation.dto.response.RoadmapResponse;
 import com.example.devs.domain.roadmap.presentation.dto.response.RoadmapStatusResponse;
 import com.example.devs.domain.roadmap.service.RoadmapCreateService;
+import com.example.devs.domain.roadmap.service.RoadmapMyQueryService;
 import com.example.devs.domain.roadmap.service.RoadmapStatusQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +24,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoadmapController {
     private final RoadmapCreateService roadmapCreateService;
     private final RoadmapStatusQueryService roadmapStatusQueryService;
+    private final RoadmapMyQueryService roadmapMyQueryService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
     public RoadmapCreateResponse create(@Valid @RequestBody RoadmapCreateRequest request) {
         return roadmapCreateService.execute(request);
+    }
+
+    @GetMapping
+    public RoadmapResponse getMyRoadmap() {
+        return roadmapMyQueryService.execute();
     }
 
     @GetMapping("/{roadmapId}/status")
