@@ -1,8 +1,10 @@
 package com.example.devs.domain.roadmap.service;
 
 import com.example.devs.domain.roadmap.domain.Roadmap;
+import com.example.devs.domain.roadmap.domain.RoadmapDayCompletion;
 import com.example.devs.domain.roadmap.domain.RoadmapItem;
 import com.example.devs.domain.roadmap.domain.RoadmapStatus;
+import com.example.devs.domain.roadmap.domain.repository.RoadmapDayCompletionRepository;
 import com.example.devs.domain.roadmap.domain.repository.RoadmapItemRepository;
 import com.example.devs.domain.roadmap.domain.repository.RoadmapRepository;
 import com.example.devs.domain.roadmap.exception.RoadmapNotFoundException;
@@ -24,6 +26,7 @@ public class RoadmapMyQueryService {
 
     private final RoadmapRepository roadmapRepository;
     private final RoadmapItemRepository roadmapItemRepository;
+    private final RoadmapDayCompletionRepository roadmapDayCompletionRepository;
     private final UserFacade userFacade;
 
     @Transactional(readOnly = true)
@@ -32,10 +35,13 @@ public class RoadmapMyQueryService {
         Roadmap roadmap = roadmapRepository.findByUserId(userId)
                 .orElseThrow(RoadmapNotFoundException::new);
 
-        List<RoadmapItem> items = roadmap.getStatus() == RoadmapStatus.COMPLETED
-                ? roadmapItemRepository.findByRoadmapIdOrderByDayNoAscSeqAsc(roadmap.getId())
-                : List.of();
+        if (roadmap.getStatus() != RoadmapStatus.COMPLETED) {
+            return RoadmapResponse.of(roadmap, List.of(), List.of(), 0);
+        }
 
-        return RoadmapResponse.of(roadmap, items, roadmap.openedDayNo(ZonedDateTime.now(SEOUL)));
+        List<RoadmapItem> items = roadmapItemRepository.findByRoadmapIdOrderByDayNoAscSeqAsc(roadmap.getId());
+        List<RoadmapDayCompletion> completions = roadmapDayCompletionRepository.findByRoadmapId(roadmap.getId());
+
+        return RoadmapResponse.of(roadmap, items, completions, roadmap.openedDayNo(ZonedDateTime.now(SEOUL)));
     }
 }
