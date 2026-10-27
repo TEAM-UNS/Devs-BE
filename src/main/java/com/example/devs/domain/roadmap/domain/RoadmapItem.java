@@ -78,4 +78,12 @@ public class RoadmapItem {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
+
+    public void updateDone(boolean done) {
+        if (this.done == done) {
+            return;
+        }
+        this.done = done;
+        this.doneAt = done ? OffsetDateTime.now() : null;
+    }
 }
