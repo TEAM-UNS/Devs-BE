@@ -118,6 +118,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/roadmap").authenticated()
                         .requestMatchers(HttpMethod.GET, "/roadmap").authenticated()
                         .requestMatchers(HttpMethod.GET, "/roadmap/{roadmapId}/status").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/roadmap/items/{itemId}").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/roadmap/days/{dayNo}/complete").authenticated()
 
                         .anyRequest().denyAll())
                 .oauth2Login(oauth2 -> oauth2
