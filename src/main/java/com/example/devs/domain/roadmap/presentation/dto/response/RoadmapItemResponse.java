@@ -18,4 +18,11 @@ public record RoadmapItemResponse(
                 .done(item.isDone())
                 .build();
     }
+
+    public static RoadmapItemResponse locked(RoadmapItem item) {
+        return RoadmapItemResponse.builder()
+                .itemId(item.getId())
+                .done(false)
+                .build();
+    }
 }
