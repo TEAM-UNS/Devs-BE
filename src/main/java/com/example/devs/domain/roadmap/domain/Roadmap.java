@@ -26,6 +26,8 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +97,11 @@ public class Roadmap {
         this.field = field;
         this.targetWeeks = targetWeeks;
         this.skillIds = skillIds;
+    }
+
+    public int openedDayNo(ZonedDateTime now) {
+        ZonedDateTime createdAtInZone = createdAt.atZoneSameInstant(now.getZone());
+        return (int) ChronoUnit.DAYS.between(createdAtInZone.toLocalDate(), now.toLocalDate()) + 1;
     }
 
     public boolean isInProgress() {
