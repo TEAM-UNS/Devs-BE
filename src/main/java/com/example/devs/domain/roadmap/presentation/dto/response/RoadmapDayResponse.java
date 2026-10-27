@@ -9,15 +9,19 @@ import java.util.List;
 public record RoadmapDayResponse(
         int dayNo,
         int weekNo,
+        boolean locked,
         boolean completed,
         List<RoadmapItemResponse> items
 ) {
-    public static RoadmapDayResponse of(int dayNo, List<RoadmapItem> items) {
+    public static RoadmapDayResponse of(int dayNo, List<RoadmapItem> items, boolean locked) {
         return RoadmapDayResponse.builder()
                 .dayNo(dayNo)
                 .weekNo(items.get(0).getWeekNo())
-                .completed(items.stream().allMatch(RoadmapItem::isDone))
-                .items(items.stream().map(RoadmapItemResponse::from).toList())
+                .locked(locked)
+                .completed(!locked && items.stream().allMatch(RoadmapItem::isDone))
+                .items(items.stream()
+                        .map(locked ? RoadmapItemResponse::locked : RoadmapItemResponse::from)
+                        .toList())
                 .build();
     }
 }

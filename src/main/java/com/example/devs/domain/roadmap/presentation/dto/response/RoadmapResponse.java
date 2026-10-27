@@ -17,14 +17,14 @@ public record RoadmapResponse(
         int learningRate,
         List<RoadmapDayResponse> days
 ) {
-    public static RoadmapResponse of(Roadmap roadmap, List<RoadmapItem> items) {
+    public static RoadmapResponse of(Roadmap roadmap, List<RoadmapItem> items, int openedDayNo) {
         long doneCount = items.stream().filter(RoadmapItem::isDone).count();
         int learningRate = items.isEmpty() ? 0 : (int) (doneCount * 100 / items.size());
 
         List<RoadmapDayResponse> days = items.stream()
                 .collect(Collectors.groupingBy(RoadmapItem::getDayNo, LinkedHashMap::new, Collectors.toList()))
                 .entrySet().stream()
-                .map(entry -> RoadmapDayResponse.of(entry.getKey(), entry.getValue()))
+                .map(entry -> RoadmapDayResponse.of(entry.getKey(), entry.getValue(), entry.getKey() > openedDayNo))
                 .toList();
 
         return RoadmapResponse.builder()
