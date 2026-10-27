@@ -12,11 +12,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class RoadmapMyQueryService {
+
+    private static final ZoneId SEOUL = ZoneId.of("Asia/Seoul");
 
     private final RoadmapRepository roadmapRepository;
     private final RoadmapItemRepository roadmapItemRepository;
@@ -32,6 +36,6 @@ public class RoadmapMyQueryService {
                 ? roadmapItemRepository.findByRoadmapIdOrderByDayNoAscSeqAsc(roadmap.getId())
                 : List.of();
 
-        return RoadmapResponse.of(roadmap, items);
+        return RoadmapResponse.of(roadmap, items, roadmap.openedDayNo(ZonedDateTime.now(SEOUL)));
     }
 }
