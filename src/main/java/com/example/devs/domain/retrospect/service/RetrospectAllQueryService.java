@@ -10,6 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +25,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class RetrospectAllQueryService {
+    private static final ZoneId SEOUL = ZoneId.of("Asia/Seoul");
+    private static final LocalTime BOARD_RESET_TIME = LocalTime.of(9, 0);
+
     private final RetrospectRepository retrospectRepository;
     private final RetrospectLikeRepository retrospectLikeRepository;
     private final UserFacade userFacade;
@@ -26,7 +35,9 @@ public class RetrospectAllQueryService {
     @Transactional(readOnly = true)
     public List<RetrospectAllQueryResponse> execute() {
         Long userId = userFacade.getCurrentUserId();
-        List<Retrospect> retrospects = retrospectRepository.findAllByOrderByCreatedAtDesc();
+        List<Retrospect> retrospects = retrospectRepository.findByCreatedAtGreaterThanEqualOrderByCreatedAtDesc(
+                boardStartedAt(ZonedDateTime.now(SEOUL))
+        );
         if (retrospects.isEmpty()) {
             return List.of();
         }
@@ -46,5 +57,12 @@ public class RetrospectAllQueryService {
                         likedRetrospectIds.contains(retrospect.getId())
                 ))
                 .toList();
+    }
+
+    private OffsetDateTime boardStartedAt(ZonedDateTime now) {
+        ZonedDateTime thisWeekReset = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                .with(BOARD_RESET_TIME);
+        ZonedDateTime boardStartedAt = now.isBefore(thisWeekReset) ? thisWeekReset.minusWeeks(1) : thisWeekReset;
+        return boardStartedAt.toOffsetDateTime();
     }
 }
