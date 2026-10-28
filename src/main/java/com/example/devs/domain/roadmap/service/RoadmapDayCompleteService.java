@@ -1,5 +1,7 @@
 package com.example.devs.domain.roadmap.service;
 
+import com.example.devs.domain.retrospect.domain.Retrospect;
+import com.example.devs.domain.retrospect.domain.repository.RetrospectRepository;
 import com.example.devs.domain.roadmap.domain.Roadmap;
 import com.example.devs.domain.roadmap.domain.RoadmapDayCompletion;
 import com.example.devs.domain.roadmap.domain.RoadmapItem;
@@ -34,6 +36,7 @@ public class RoadmapDayCompleteService {
     private final RoadmapRepository roadmapRepository;
     private final RoadmapItemRepository roadmapItemRepository;
     private final RoadmapDayCompletionRepository roadmapDayCompletionRepository;
+    private final RetrospectRepository retrospectRepository;
     private final UserFacade userFacade;
 
     @Transactional
@@ -63,15 +66,23 @@ public class RoadmapDayCompleteService {
             throw new RoadmapDayAlreadyCompletedException();
         }
 
-        String retrospect = StringUtils.hasText(request.retrospect()) ? request.retrospect().strip() : null;
+        RoadmapDayCompletion completion;
         try {
-            roadmapDayCompletionRepository.save(RoadmapDayCompletion.builder()
+            completion = roadmapDayCompletionRepository.save(RoadmapDayCompletion.builder()
                     .roadmap(roadmap)
                     .dayNo(dayNo)
-                    .retrospect(retrospect)
                     .build());
         } catch (DataIntegrityViolationException e) {
             throw new RoadmapDayAlreadyCompletedException();
+        }
+
+        if (StringUtils.hasText(request.retrospect())) {
+            retrospectRepository.save(Retrospect.builder()
+                    .userId(userId)
+                    .dayCompletion(completion)
+                    .dayNo(dayNo)
+                    .content(request.retrospect().strip())
+                    .build());
         }
     }
 }
