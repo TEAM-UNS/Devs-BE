@@ -123,6 +123,8 @@ public class SecurityConfig {
 
                         //retrospect
                         .requestMatchers(HttpMethod.GET, "/retrospect").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/retrospect/{retrospectId}/like").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/retrospect/{retrospectId}/like").authenticated()
 
                         .anyRequest().denyAll())
                 .oauth2Login(oauth2 -> oauth2
