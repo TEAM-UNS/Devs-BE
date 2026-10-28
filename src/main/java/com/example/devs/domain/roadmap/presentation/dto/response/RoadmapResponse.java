@@ -1,5 +1,6 @@
 package com.example.devs.domain.roadmap.presentation.dto.response;
 
+import com.example.devs.domain.retrospect.domain.Retrospect;
 import com.example.devs.domain.roadmap.domain.Roadmap;
 import com.example.devs.domain.roadmap.domain.RoadmapDayCompletion;
 import com.example.devs.domain.roadmap.domain.RoadmapItem;
@@ -20,10 +21,16 @@ public record RoadmapResponse(
         List<RoadmapDayResponse> days
 ) {
     public static RoadmapResponse of(
-            Roadmap roadmap, List<RoadmapItem> items, List<RoadmapDayCompletion> completions, int openedDayNo
+            Roadmap roadmap,
+            List<RoadmapItem> items,
+            List<RoadmapDayCompletion> completions,
+            List<Retrospect> retrospects,
+            int openedDayNo
     ) {
         Map<Integer, RoadmapDayCompletion> completionByDayNo = completions.stream()
                 .collect(Collectors.toMap(RoadmapDayCompletion::getDayNo, completion -> completion));
+        Map<Integer, String> retrospectByDayNo = retrospects.stream()
+                .collect(Collectors.toMap(Retrospect::getDayNo, Retrospect::getContent));
 
         long doneCount = items.stream().filter(RoadmapItem::isDone).count();
         int learningRate = items.isEmpty() ? 0 : (int) (doneCount * 100 / items.size());
@@ -35,7 +42,8 @@ public record RoadmapResponse(
                         entry.getKey(),
                         entry.getValue(),
                         entry.getKey() > openedDayNo,
-                        completionByDayNo.get(entry.getKey())
+                        completionByDayNo.get(entry.getKey()),
+                        retrospectByDayNo.get(entry.getKey())
                 ))
                 .toList();
 

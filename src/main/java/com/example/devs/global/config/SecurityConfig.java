@@ -121,6 +121,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/roadmap/items/{itemId}").authenticated()
                         .requestMatchers(HttpMethod.POST, "/roadmap/days/{dayNo}/complete").authenticated()
 
+                        //retrospect
+                        .requestMatchers(HttpMethod.GET, "/retrospect").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/retrospect/{retrospectId}/like").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/retrospect/{retrospectId}/like").authenticated()
+
                         .anyRequest().denyAll())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
