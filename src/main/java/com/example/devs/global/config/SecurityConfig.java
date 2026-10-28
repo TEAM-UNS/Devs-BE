@@ -111,7 +111,15 @@ public class SecurityConfig {
                         //chat
                         .requestMatchers(HttpMethod.GET, "/chat/sessions").authenticated()
                         .requestMatchers(HttpMethod.GET, "/chat/sessions/{sessionId}/messages").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/chat/sessions/{sessionId}").authenticated()
                         .requestMatchers(HttpMethod.POST, "/chat/messages").authenticated()
+
+                        //roadmap
+                        .requestMatchers(HttpMethod.POST, "/roadmap").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/roadmap").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/roadmap/{roadmapId}/status").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/roadmap/items/{itemId}").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/roadmap/days/{dayNo}/complete").authenticated()
 
                         .anyRequest().denyAll())
                 .oauth2Login(oauth2 -> oauth2
