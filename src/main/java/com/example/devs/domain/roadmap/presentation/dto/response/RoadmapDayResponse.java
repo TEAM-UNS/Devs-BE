@@ -17,7 +17,7 @@ public record RoadmapDayResponse(
         List<RoadmapItemResponse> items
 ) {
     public static RoadmapDayResponse of(
-            int dayNo, List<RoadmapItem> items, boolean locked, RoadmapDayCompletion completion
+            int dayNo, List<RoadmapItem> items, boolean locked, RoadmapDayCompletion completion, String retrospect
     ) {
         return RoadmapDayResponse.builder()
                 .dayNo(dayNo)
@@ -25,7 +25,7 @@ public record RoadmapDayResponse(
                 .locked(locked)
                 .allItemsDone(!locked && items.stream().allMatch(RoadmapItem::isDone))
                 .completed(completion != null)
-                .retrospect(completion != null ? completion.getRetrospect() : null)
+                .retrospect(retrospect)
                 .items(items.stream()
                         .map(locked ? RoadmapItemResponse::locked : RoadmapItemResponse::from)
                         .toList())
