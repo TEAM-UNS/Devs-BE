@@ -1,0 +1,47 @@
+name: Deploy Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, devs-server]
+    environment: production
+    defaults:
+      run:
+        working-directory: /home/kanghee/apps/Devs-BE
+    steps:
+      - name: Pull latest code
+        run: |
+          git fetch origin main
+          git reset --hard origin/main
+
+      - name: Build and restart app
+        run: docker compose -f compose.prod.yml up -d --build --no-deps app
+
+      - name: Wait for app
+        run: |
+          for i in $(seq 1 40); do
+            address=$(docker compose -f compose.prod.yml port app 8080 2>/dev/null || true)
+            code=$(curl -s -o /dev/null -w '%{http_code}' "http://${address}/" || true)
+            if [ -n "$address" ] && [ "$code" != "000" ]; then
+              echo "app is up (HTTP $code)"
+              exit 0
+            fi
+            sleep 3
+          done
+          docker compose -f compose.prod.yml logs --tail 200 app
+          exit 1
+
+      - name: Clean up old images
+        if: always()
+        run: docker image prune -f

@@ -51,7 +51,16 @@ public enum ErrorCode {
             HttpStatus.NOT_FOUND,
             "감소한 기술 추이 데이터를 찾을 수 없습니다."
     ),
-    CHAT_SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "채팅 세션을 찾을 수 없습니다.");
+    CHAT_SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "채팅 세션을 찾을 수 없습니다."),
+    ROADMAP_GENERATION_REQUEST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "로드맵 생성 요청에 실패했습니다."),
+    ROADMAP_ALREADY_GENERATING(HttpStatus.CONFLICT, "이미 로드맵을 생성하고 있습니다."),
+    ROADMAP_NOT_FOUND(HttpStatus.NOT_FOUND, "로드맵을 찾을 수 없습니다."),
+    ROADMAP_NOT_READY(HttpStatus.CONFLICT, "로드맵 생성이 완료되지 않았습니다."),
+    ROADMAP_DAY_NOT_FOUND(HttpStatus.NOT_FOUND, "로드맵 일차를 찾을 수 없습니다."),
+    ROADMAP_DAY_LOCKED(HttpStatus.CONFLICT, "아직 열리지 않은 일차입니다."),
+    ROADMAP_DAY_ITEMS_NOT_DONE(HttpStatus.CONFLICT, "일차의 모든 항목을 완료해야 합니다."),
+    ROADMAP_DAY_ALREADY_COMPLETED(HttpStatus.CONFLICT, "이미 완료한 일차입니다."),
+    ROADMAP_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "로드맵 항목을 찾을 수 없습니다.");
 
     private final HttpStatus status;
     private final String message;
