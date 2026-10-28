@@ -11,16 +11,20 @@ public record RetrospectAllQueryResponse(
         Long retrospectId,
         int dayNo,
         String content,
-        LocalDate date
+        LocalDate date,
+        long likeCount,
+        boolean liked
 ) {
     private static final ZoneId SEOUL = ZoneId.of("Asia/Seoul");
 
-    public static RetrospectAllQueryResponse from(Retrospect retrospect) {
+    public static RetrospectAllQueryResponse of(Retrospect retrospect, long likeCount, boolean liked) {
         return RetrospectAllQueryResponse.builder()
                 .retrospectId(retrospect.getId())
                 .dayNo(retrospect.getDayNo())
                 .content(retrospect.getContent())
                 .date(retrospect.getCreatedAt().atZoneSameInstant(SEOUL).toLocalDate())
+                .likeCount(likeCount)
+                .liked(liked)
                 .build();
     }
 }
