@@ -47,17 +47,13 @@ public class RoadmapDayCompletion {
     @Column(name = "day_no", nullable = false)
     private int dayNo;
 
-    @Column(columnDefinition = "text")
-    private String retrospect;
-
     @CreationTimestamp
     @Column(name = "completed_at", nullable = false, updatable = false)
     private OffsetDateTime completedAt;
 
     @Builder
-    public RoadmapDayCompletion(Roadmap roadmap, int dayNo, String retrospect) {
+    public RoadmapDayCompletion(Roadmap roadmap, int dayNo) {
         this.roadmap = roadmap;
         this.dayNo = dayNo;
-        this.retrospect = retrospect;
     }
 }
