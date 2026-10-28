@@ -60,7 +60,10 @@ public enum ErrorCode {
     ROADMAP_DAY_LOCKED(HttpStatus.CONFLICT, "아직 열리지 않은 일차입니다."),
     ROADMAP_DAY_ITEMS_NOT_DONE(HttpStatus.CONFLICT, "일차의 모든 항목을 완료해야 합니다."),
     ROADMAP_DAY_ALREADY_COMPLETED(HttpStatus.CONFLICT, "이미 완료한 일차입니다."),
-    ROADMAP_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "로드맵 항목을 찾을 수 없습니다.");
+    ROADMAP_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "로드맵 항목을 찾을 수 없습니다."),
+    RETROSPECT_NOT_FOUND(HttpStatus.NOT_FOUND, "회고를 찾을 수 없습니다."),
+    RETROSPECT_ALREADY_LIKED(HttpStatus.CONFLICT, "이미 좋아요를 누른 회고입니다."),
+    RETROSPECT_LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "좋아요를 누르지 않은 회고입니다.");
 
     private final HttpStatus status;
     private final String message;
