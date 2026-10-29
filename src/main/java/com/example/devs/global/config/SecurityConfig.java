@@ -79,10 +79,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/majors").permitAll()
 
                         //dashboard
-                        .requestMatchers(HttpMethod.GET, "/dashboard/summary").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/dashboard/popular-tech-stacks").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/dashboard/company-size-tech-stacks").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/dashboard/best-tech-stacks").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/dashboard/summary").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/dashboard/popular-tech-stacks").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/dashboard/company-size-tech-stacks").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/dashboard/best-tech-stacks").permitAll()
 
                         //report
                         .requestMatchers(HttpMethod.GET, "/report/llm").authenticated()
