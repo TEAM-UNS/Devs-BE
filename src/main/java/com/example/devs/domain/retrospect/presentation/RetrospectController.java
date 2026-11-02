@@ -1,7 +1,9 @@
 package com.example.devs.domain.retrospect.presentation;
 
 import com.example.devs.domain.retrospect.presentation.dto.response.RetrospectAllQueryResponse;
+import com.example.devs.domain.retrospect.presentation.dto.response.RetrospectMyAllQueryResponse;
 import com.example.devs.domain.retrospect.service.RetrospectAllQueryService;
+import com.example.devs.domain.retrospect.service.RetrospectMyAllQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,9 +16,15 @@ import java.util.List;
 @RequestMapping("/retrospect")
 public class RetrospectController {
     private final RetrospectAllQueryService retrospectAllQueryService;
+    private final RetrospectMyAllQueryService retrospectMyAllQueryService;
 
     @GetMapping
     public List<RetrospectAllQueryResponse> getAll() {
         return retrospectAllQueryService.execute();
+    }
+
+    @GetMapping("/my")
+    public List<RetrospectMyAllQueryResponse> getMyAll() {
+        return retrospectMyAllQueryService.execute();
     }
 }
