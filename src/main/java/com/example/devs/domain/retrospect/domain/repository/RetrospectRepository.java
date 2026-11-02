@@ -10,4 +10,6 @@ public interface RetrospectRepository extends JpaRepository<Retrospect, Long> {
     List<Retrospect> findByDayCompletionRoadmapId(Long roadmapId);
 
     List<Retrospect> findByCreatedAtGreaterThanEqualOrderByCreatedAtDesc(OffsetDateTime createdAt);
+
+    List<Retrospect> findByUserIdOrderByCreatedAtDesc(Long userId);
 }

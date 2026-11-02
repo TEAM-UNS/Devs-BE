@@ -123,6 +123,7 @@ public class SecurityConfig {
 
                         //retrospect
                         .requestMatchers(HttpMethod.GET, "/retrospect").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/retrospect/my").authenticated()
                         .requestMatchers(HttpMethod.POST, "/like/{retrospectId}").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/like/{retrospectId}").authenticated()
 
