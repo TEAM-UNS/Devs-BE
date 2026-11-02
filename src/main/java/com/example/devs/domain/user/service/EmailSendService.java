@@ -91,7 +91,7 @@ public class EmailSendService {
             return StreamUtils.copyToString(
                     new ClassPathResource(TEMPLATE_PATH).getInputStream(),
                     StandardCharsets.UTF_8
-            );
+            ).replaceAll("(?s)<!--.*?-->", "");
         } catch (IOException exception) {
             throw new UncheckedIOException(exception);
         }
