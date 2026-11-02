@@ -32,6 +32,7 @@ public class EmailSendService {
     private static final Duration CODE_EXPIRATION = Duration.ofMinutes(5);
     private static final Duration RESEND_COOLDOWN = Duration.ofMinutes(5);
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    private static final String SENDER_NAME = "Devs";
     private static final String TEMPLATE_PATH = "templates/mail/email-verification.html";
     private static final ClassPathResource LOGO = new ClassPathResource("templates/mail/devs-logo.png");
     private static final String TEMPLATE = loadTemplate();
@@ -74,7 +75,7 @@ public class EmailSendService {
     private MimeMessagePreparator createMessage(String email, String code) {
         return mimeMessage -> {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-            helper.setFrom(emailSender);
+            helper.setFrom(emailSender, SENDER_NAME);
             helper.setTo(email);
             helper.setSubject("[Devs] 이메일 인증 코드");
             helper.setText(
