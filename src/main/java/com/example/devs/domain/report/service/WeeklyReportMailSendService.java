@@ -27,6 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WeeklyReportMailSendService {
     public static final String TOTAL_MAJOR_NAME = "전체";
+    private static final String SENDER_NAME = "Devs";
     private static final List<String> INLINE_IMAGES = List.of("report-logo", "arrow-up", "arrow-down", "arrow-same");
 
     private final ReportRepository reportRepository;
@@ -53,7 +54,7 @@ public class WeeklyReportMailSendService {
         try {
             mailSender.send(mimeMessage -> {
                 MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-                helper.setFrom(emailSender);
+                helper.setFrom(emailSender, SENDER_NAME);
                 helper.setTo(email);
                 helper.setSubject(mail.subject());
                 helper.setText(mail.text(), mail.html());
