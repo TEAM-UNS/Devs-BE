@@ -57,6 +57,8 @@ public enum ErrorCode {
     ROADMAP_NOT_FOUND(HttpStatus.NOT_FOUND, "로드맵을 찾을 수 없습니다."),
     ROADMAP_NOT_READY(HttpStatus.CONFLICT, "로드맵 생성이 완료되지 않았습니다."),
     ROADMAP_IN_PROGRESS(HttpStatus.CONFLICT, "생성 중인 로드맵은 삭제할 수 없습니다."),
+    ROADMAP_LIMIT_EXCEEDED(HttpStatus.CONFLICT, "로드맵은 최대 10개까지 만들 수 있습니다."),
+    ROADMAP_DAILY_LIMIT_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, "로드맵은 하루에 3개까지 만들 수 있습니다."),
     ROADMAP_DAY_NOT_FOUND(HttpStatus.NOT_FOUND, "로드맵 일차를 찾을 수 없습니다."),
     ROADMAP_DAY_LOCKED(HttpStatus.CONFLICT, "아직 열리지 않은 일차입니다."),
     ROADMAP_DAY_ITEMS_NOT_DONE(HttpStatus.CONFLICT, "일차의 모든 항목을 완료해야 합니다."),
