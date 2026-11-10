@@ -118,6 +118,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/roadmap").authenticated()
                         .requestMatchers(HttpMethod.GET, "/roadmap").authenticated()
                         .requestMatchers(HttpMethod.GET, "/roadmap/{roadmapId}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/roadmap/{roadmapId}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/roadmap/{roadmapId}/status").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/roadmap/items/{itemId}").authenticated()
                         .requestMatchers(HttpMethod.POST, "/roadmap/{roadmapId}/days/{dayNo}/complete").authenticated()

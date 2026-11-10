@@ -10,6 +10,7 @@ import com.example.devs.domain.roadmap.presentation.dto.response.RoadmapResponse
 import com.example.devs.domain.roadmap.presentation.dto.response.RoadmapStatusResponse;
 import com.example.devs.domain.roadmap.service.RoadmapCreateService;
 import com.example.devs.domain.roadmap.service.RoadmapDayCompleteService;
+import com.example.devs.domain.roadmap.service.RoadmapDeleteService;
 import com.example.devs.domain.roadmap.service.RoadmapItemCheckService;
 import com.example.devs.domain.roadmap.service.RoadmapMyQueryListService;
 import com.example.devs.domain.roadmap.service.RoadmapMyQueryService;
@@ -17,6 +18,7 @@ import com.example.devs.domain.roadmap.service.RoadmapStatusQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +38,7 @@ public class RoadmapController {
     private final RoadmapStatusQueryService roadmapStatusQueryService;
     private final RoadmapMyQueryService roadmapMyQueryService;
     private final RoadmapMyQueryListService roadmapMyQueryListService;
+    private final RoadmapDeleteService roadmapDeleteService;
     private final RoadmapDayCompleteService roadmapDayCompleteService;
     private final RoadmapItemCheckService roadmapItemCheckService;
 
@@ -53,6 +56,12 @@ public class RoadmapController {
     @GetMapping("/{roadmapId}")
     public RoadmapResponse getMyRoadmap(@PathVariable Long roadmapId) {
         return roadmapMyQueryService.execute(roadmapId);
+    }
+
+    @DeleteMapping("/{roadmapId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long roadmapId) {
+        roadmapDeleteService.execute(roadmapId);
     }
 
     @GetMapping("/{roadmapId}/status")
