@@ -117,9 +117,10 @@ public class SecurityConfig {
                         //roadmap
                         .requestMatchers(HttpMethod.POST, "/roadmap").authenticated()
                         .requestMatchers(HttpMethod.GET, "/roadmap").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/roadmap/{roadmapId}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/roadmap/{roadmapId}/status").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/roadmap/items/{itemId}").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/roadmap/days/{dayNo}/complete").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/roadmap/{roadmapId}/days/{dayNo}/complete").authenticated()
 
                         //retrospect
                         .requestMatchers(HttpMethod.GET, "/retrospect").authenticated()

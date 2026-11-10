@@ -40,9 +40,9 @@ public class RoadmapDayCompleteService {
     private final UserFacade userFacade;
 
     @Transactional
-    public void execute(int dayNo, RoadmapRetrospectRequest request) {
+    public void execute(Long roadmapId, int dayNo, RoadmapRetrospectRequest request) {
         Long userId = userFacade.getCurrentUserId();
-        Roadmap roadmap = roadmapRepository.findByUserId(userId)
+        Roadmap roadmap = roadmapRepository.findByIdAndUserId(roadmapId, userId)
                 .orElseThrow(RoadmapNotFoundException::new);
 
         if (roadmap.getStatus() != RoadmapStatus.COMPLETED) {

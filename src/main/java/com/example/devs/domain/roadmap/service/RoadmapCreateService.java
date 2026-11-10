@@ -1,6 +1,7 @@
 package com.example.devs.domain.roadmap.service;
 
 import com.example.devs.domain.roadmap.domain.Roadmap;
+import com.example.devs.domain.roadmap.domain.RoadmapStatus;
 import com.example.devs.domain.roadmap.domain.repository.RoadmapRepository;
 import com.example.devs.domain.roadmap.exception.RoadmapAlreadyGeneratingException;
 import com.example.devs.domain.roadmap.exception.RoadmapGenerationRequestFailedException;
@@ -23,6 +24,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -30,6 +32,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class RoadmapCreateService {
     private static final Duration TIMEOUT = Duration.ofSeconds(10);
+    private static final List<RoadmapStatus> IN_PROGRESS_STATUSES =
+            List.of(RoadmapStatus.PENDING, RoadmapStatus.GENERATING);
 
     private final UserFacade userFacade;
     private final TechFieldRepository techFieldRepository;
@@ -47,12 +51,9 @@ public class RoadmapCreateService {
             throw new SkillNotFoundException();
         }
 
-        roadmapRepository.findByUserId(userId).ifPresent(existing -> {
-            if (existing.isInProgress()) {
-                throw new RoadmapAlreadyGeneratingException();
-            }
-            roadmapRepository.delete(existing);
-        });
+        if (roadmapRepository.existsByUserIdAndStatusIn(userId, IN_PROGRESS_STATUSES)) {
+            throw new RoadmapAlreadyGeneratingException();
+        }
 
         Roadmap roadmap;
         try {
