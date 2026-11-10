@@ -33,9 +33,9 @@ public class RoadmapMyQueryService {
     private final UserFacade userFacade;
 
     @Transactional(readOnly = true)
-    public RoadmapResponse execute() {
+    public RoadmapResponse execute(Long roadmapId) {
         Long userId = userFacade.getCurrentUserId();
-        Roadmap roadmap = roadmapRepository.findByUserId(userId)
+        Roadmap roadmap = roadmapRepository.findByIdAndUserId(roadmapId, userId)
                 .orElseThrow(RoadmapNotFoundException::new);
 
         if (roadmap.getStatus() != RoadmapStatus.COMPLETED) {

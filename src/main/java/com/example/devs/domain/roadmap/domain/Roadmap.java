@@ -38,7 +38,7 @@ import java.util.Map;
 @Table(
         name = "roadmap",
         schema = "market",
-        indexes = @Index(name = "uk_roadmap_user", columnList = "user_id", unique = true),
+        indexes = @Index(name = "idx_roadmap_user", columnList = "user_id"),
         check = @CheckConstraint(
                 name = "roadmap_target_weeks_check",
                 constraint = "target_weeks BETWEEN 1 AND 12"
