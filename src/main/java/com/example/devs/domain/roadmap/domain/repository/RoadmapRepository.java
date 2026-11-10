@@ -16,4 +16,6 @@ public interface RoadmapRepository extends JpaRepository<Roadmap, Long> {
     Optional<Roadmap> findByIdAndUserId(Long id, Long userId);
 
     boolean existsByUserIdAndStatusIn(Long userId, Collection<RoadmapStatus> statuses);
+
+    long countByUserId(Long userId);
 }
