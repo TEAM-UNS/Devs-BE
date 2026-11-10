@@ -56,6 +56,7 @@ public enum ErrorCode {
     ROADMAP_ALREADY_GENERATING(HttpStatus.CONFLICT, "이미 로드맵을 생성하고 있습니다."),
     ROADMAP_NOT_FOUND(HttpStatus.NOT_FOUND, "로드맵을 찾을 수 없습니다."),
     ROADMAP_NOT_READY(HttpStatus.CONFLICT, "로드맵 생성이 완료되지 않았습니다."),
+    ROADMAP_IN_PROGRESS(HttpStatus.CONFLICT, "생성 중인 로드맵은 삭제할 수 없습니다."),
     ROADMAP_DAY_NOT_FOUND(HttpStatus.NOT_FOUND, "로드맵 일차를 찾을 수 없습니다."),
     ROADMAP_DAY_LOCKED(HttpStatus.CONFLICT, "아직 열리지 않은 일차입니다."),
     ROADMAP_DAY_ITEMS_NOT_DONE(HttpStatus.CONFLICT, "일차의 모든 항목을 완료해야 합니다."),
