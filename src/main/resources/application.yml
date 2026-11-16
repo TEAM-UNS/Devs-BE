@@ -44,6 +44,11 @@ spring:
       # LLM 응답 스트리밍이 기본 타임아웃(30초)에 끊기지 않도록 늘린다.
       request-timeout: 3m
 
+  task:
+    scheduling:
+      pool:
+        size: 2
+
   mail:
     host: smtp.gmail.com
     port: 587
