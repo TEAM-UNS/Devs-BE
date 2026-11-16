@@ -8,7 +8,7 @@ import com.example.devs.domain.dashboard.presentation.dto.response.DashboardSumm
 import com.example.devs.domain.dashboard.presentation.dto.response.PopularTechStackListResponse;
 import com.example.devs.domain.dashboard.service.BestTechStackQueryService;
 import com.example.devs.domain.dashboard.service.CompanySizeTechStackQueryService;
-import com.example.devs.domain.dashboard.service.DashboardSummaryService;
+import com.example.devs.domain.dashboard.service.DashboardSummaryCacheService;
 import com.example.devs.domain.dashboard.service.PopularTechStackQueryService;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/dashboard")
 public class DashboardController {
-    private final DashboardSummaryService dashboardSummaryService;
     private final PopularTechStackQueryService popularTechStackQueryService;
     private final CompanySizeTechStackQueryService companySizeTechStackQueryService;
     private final BestTechStackQueryService bestTechStackQueryService;
+    private final DashboardSummaryCacheService dashboardSummaryCacheService;
 
     @GetMapping("/summary")
     public DashboardSummaryResponse getSummary() {
-        return dashboardSummaryService.execute();
+        return dashboardSummaryCacheService.getDashboardSummary();
     }
 
     @GetMapping("/popular-tech-stacks")
