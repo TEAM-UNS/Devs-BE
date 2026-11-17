@@ -5,16 +5,20 @@ import com.example.devs.domain.roadmap.presentation.dto.request.RoadmapItemCheck
 import com.example.devs.domain.roadmap.presentation.dto.request.RoadmapRetrospectRequest;
 import com.example.devs.domain.roadmap.presentation.dto.response.RoadmapCreateResponse;
 import com.example.devs.domain.roadmap.presentation.dto.response.RoadmapItemCheckResponse;
+import com.example.devs.domain.roadmap.presentation.dto.response.RoadmapMyQueryListResponse;
 import com.example.devs.domain.roadmap.presentation.dto.response.RoadmapResponse;
 import com.example.devs.domain.roadmap.presentation.dto.response.RoadmapStatusResponse;
 import com.example.devs.domain.roadmap.service.RoadmapCreateService;
 import com.example.devs.domain.roadmap.service.RoadmapDayCompleteService;
+import com.example.devs.domain.roadmap.service.RoadmapDeleteService;
 import com.example.devs.domain.roadmap.service.RoadmapItemCheckService;
+import com.example.devs.domain.roadmap.service.RoadmapMyQueryListService;
 import com.example.devs.domain.roadmap.service.RoadmapMyQueryService;
 import com.example.devs.domain.roadmap.service.RoadmapStatusQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/roadmap")
@@ -31,6 +37,8 @@ public class RoadmapController {
     private final RoadmapCreateService roadmapCreateService;
     private final RoadmapStatusQueryService roadmapStatusQueryService;
     private final RoadmapMyQueryService roadmapMyQueryService;
+    private final RoadmapMyQueryListService roadmapMyQueryListService;
+    private final RoadmapDeleteService roadmapDeleteService;
     private final RoadmapDayCompleteService roadmapDayCompleteService;
     private final RoadmapItemCheckService roadmapItemCheckService;
 
@@ -41,8 +49,19 @@ public class RoadmapController {
     }
 
     @GetMapping
-    public RoadmapResponse getMyRoadmap() {
-        return roadmapMyQueryService.execute();
+    public List<RoadmapMyQueryListResponse> getMyRoadmaps() {
+        return roadmapMyQueryListService.execute();
+    }
+
+    @GetMapping("/{roadmapId}")
+    public RoadmapResponse getMyRoadmap(@PathVariable Long roadmapId) {
+        return roadmapMyQueryService.execute(roadmapId);
+    }
+
+    @DeleteMapping("/{roadmapId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long roadmapId) {
+        roadmapDeleteService.execute(roadmapId);
     }
 
     @GetMapping("/{roadmapId}/status")
@@ -58,9 +77,13 @@ public class RoadmapController {
         return roadmapItemCheckService.execute(itemId, request);
     }
 
-    @PostMapping("/days/{dayNo}/complete")
+    @PostMapping("/{roadmapId}/days/{dayNo}/complete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void completeDay(@PathVariable int dayNo, @Valid @RequestBody RoadmapRetrospectRequest request) {
-        roadmapDayCompleteService.execute(dayNo, request);
+    public void completeDay(
+            @PathVariable Long roadmapId,
+            @PathVariable int dayNo,
+            @Valid @RequestBody RoadmapRetrospectRequest request
+    ) {
+        roadmapDayCompleteService.execute(roadmapId, dayNo, request);
     }
 }
