@@ -1,12 +1,30 @@
 package com.example.devs.domain.user.presentation;
 
-import com.example.devs.domain.user.presentation.dto.request.*;
+import com.example.devs.domain.user.presentation.dto.request.EmailVerificationConfirmRequest;
+import com.example.devs.domain.user.presentation.dto.request.EmailVerificationSendRequest;
+import com.example.devs.domain.user.presentation.dto.request.ReportSubscriptionUpdateRequest;
+import com.example.devs.domain.user.presentation.dto.request.UserLoginRequest;
+import com.example.devs.domain.user.presentation.dto.request.UserMajorUpdateRequest;
+import com.example.devs.domain.user.presentation.dto.request.UserSignupRequest;
+import com.example.devs.domain.user.presentation.dto.request.UserTechStackUpdateRequest;
 import com.example.devs.domain.user.presentation.dto.response.AccessTokenResponse;
 import com.example.devs.domain.user.presentation.dto.response.OAuthLoginResponse;
 import com.example.devs.domain.user.presentation.dto.response.LoginResponse;
 import com.example.devs.domain.user.presentation.dto.response.ReportSubscriptionQueryResponse;
 import com.example.devs.domain.user.presentation.dto.response.UserMyQueryResponse;
-import com.example.devs.domain.user.service.*;
+import com.example.devs.domain.user.service.EmailSendService;
+import com.example.devs.domain.user.service.EmailVerificationService;
+import com.example.devs.domain.user.service.GitHubOAuthLoginService;
+import com.example.devs.domain.user.service.GoogleOAuthLoginService;
+import com.example.devs.domain.user.service.ReportSubscriptionQueryService;
+import com.example.devs.domain.user.service.ReportSubscriptionUpdateService;
+import com.example.devs.domain.user.service.TokenReissueService;
+import com.example.devs.domain.user.service.UserLoginService;
+import com.example.devs.domain.user.service.UserLogoutService;
+import com.example.devs.domain.user.service.UserMajorUpdateService;
+import com.example.devs.domain.user.service.UserMyQueryService;
+import com.example.devs.domain.user.service.UserSignupService;
+import com.example.devs.domain.user.service.UserTechStackUpdateService;
 import com.example.devs.global.security.jwt.JwtPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -15,7 +33,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor

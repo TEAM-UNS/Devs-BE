@@ -1,8 +1,23 @@
 package com.example.devs.domain.report.presentation;
 
 import com.example.devs.domain.report.domain.ReportPeriod;
-import com.example.devs.domain.report.presentation.dto.response.*;
-import com.example.devs.domain.report.service.*;
+import com.example.devs.domain.report.presentation.dto.response.LlmReportQueryResponse;
+import com.example.devs.domain.report.presentation.dto.response.PopularTechStackReportResponse;
+import com.example.devs.domain.report.presentation.dto.response.ReportWeekRangeResponse;
+import com.example.devs.domain.report.presentation.dto.response.TechMentionListResponse;
+import com.example.devs.domain.report.presentation.dto.response.TechTrendResponse;
+import com.example.devs.domain.report.presentation.dto.response.WeeklyCollectedPostingCountResponse;
+import com.example.devs.domain.report.presentation.dto.response.WeeklyReportsCreateResponse;
+import com.example.devs.domain.report.service.CreateWeeklyReportsService;
+import com.example.devs.domain.report.service.GetLlmQueryService;
+import com.example.devs.domain.report.service.GetMaxDecreaseTechTrendService;
+import com.example.devs.domain.report.service.GetMaxIncreaseTechTrendService;
+import com.example.devs.domain.report.service.PopularTechStackReportService;
+import com.example.devs.domain.report.service.ReportWeekRangeService;
+import com.example.devs.domain.report.service.SendWeeklyReportMailsService;
+import com.example.devs.domain.report.service.TechMentionQueryService;
+import com.example.devs.domain.report.service.WeeklyCollectedPostingCountService;
+import com.example.devs.domain.report.service.WeeklyReportMailSendService;
 import com.example.devs.global.security.admin.AdminKeyValidator;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
