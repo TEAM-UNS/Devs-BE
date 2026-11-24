@@ -87,6 +87,7 @@ public class RoadmapCreateService {
                     .skillIds(new ArrayList<>(request.skillIds()))
                     .build());
         } catch (DataIntegrityViolationException e) {
+            log.warn("로드맵 저장 실패. userId={}", userId, e);
             throw new RoadmapAlreadyGeneratingException();
         }
 
